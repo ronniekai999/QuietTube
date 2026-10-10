@@ -107,7 +107,7 @@ background.write_text(background.read_text() + "\n// QuietTube integration, GPL-
     'Changes: YouTube-only defaults, custom popup, native companion messaging, and branding.\n'
     'Matching source, overlay, filter inputs, and license are provided with this package.\n')
 if options.app_platform == 'Mac':
-    shutil.copy2(project / 'mac/extension/help.html', ui / 'help.html')
+    shutil.copy2(project / 'mac/extension-overlay/help.html', ui / 'help.html')
     popup = ui / 'popup.html'
     popup.write_text(popup.read_text().replace('Checking Windows app', 'Checking Mac app'))
 if options.destination is None:
