@@ -4,6 +4,8 @@
 
 **Keep the video. Quiet the interruptions.**
 
+**[Download the Windows installer](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.1/QuietTube-Windows-x64-0.1.1.zip)** · [SHA-256 checksum](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.1/QuietTube-Windows-x64-0.1.1.zip.sha256)
+
 <br>
 
 <img src="https://img.shields.io/badge/Windows-11_x64-B8ED9C?labelColor=202923" alt="Windows 11 x64 target">
@@ -24,7 +26,7 @@ QuietTube pairs a native Windows tray app with a YouTube-focused browser extensi
 
 The extension builds on **[uBlock Origin Lite](https://github.com/uBlockOrigin/uBOL-home)**, by Raymond Hill and contributors, with packaged network filters and YouTube player scriptlets. QuietTube adds shared Windows controls, connection status, and a focused popup. Filtering runs inside the browser; the Windows app manages settings and reports what each browser has confirmed.
 
-> **Private preview · v0.1.1:** Windows x64 builds and 62 checks have passed on the Mac, including real Chromium/native-host integration. Execution on Windows 11, Edge playback with the intended account, and pre-roll/mid-roll ad checks are still pending. This is an unsigned test build. See [validation](#validation) for the evidence and remaining device checks.
+> **Preview · v0.1.1:** Windows x64 builds and 62 checks have passed on the Mac, including real Chromium/native-host integration. Execution on Windows 11, Edge playback with the intended account, and pre-roll/mid-roll ad checks are still pending. This is an unsigned test build. See [validation](#validation) for the evidence and remaining device checks.
 
 <a id="features"></a>
 ## ✨ What you get
@@ -55,11 +57,11 @@ The extension builds on **[uBlock Origin Lite](https://github.com/uBlockOrigin/u
 | --- | --- |
 | Operating system | **Windows 11 on an Intel/AMD x64 PC** |
 | Browser | **Microsoft Edge** is the primary target; Chrome uses the same extension |
-| Package | `QuietTube-Windows-x64-0.1.1.zip`, fully extracted |
+| Package | [QuietTube-Windows-x64-0.1.1.zip](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.1/QuietTube-Windows-x64-0.1.1.zip), fully extracted |
 | App runtime | Included in the package; no separate .NET installation required |
 | Installation | Per Windows account, without administrator access |
 
-The Windows installer ZIP is a **separate build output**. GitHub's **Code → Download ZIP** contains source and cannot be used as the installer. Use the prepared Windows package or [build it on a Mac](#development).
+Download **QuietTube-Windows-x64-0.1.1.zip** from the [Windows preview release](https://github.com/ronniekai999/QuietTube/releases/tag/v0.1.1). GitHub's **Code → Download ZIP** and automatic **Source code (zip)** downloads contain developer source and cannot be used as the installer. The Windows package includes the built executables, generated extension, and `checksums.json` required by setup. Developers can also [build it on a Mac](#development).
 
 ### 2. Install the companion
 
@@ -186,6 +188,7 @@ This removes the owned app files, saved settings, native messaging registrations
 
 | Symptom | What to check |
 | --- | --- |
+| **“checksums.json is missing”** | Download [QuietTube-Windows-x64-0.1.1.zip](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.1/QuietTube-Windows-x64-0.1.1.zip) and extract it completely. GitHub's source ZIP does not contain the installer payload; repeatedly extracting that source ZIP will produce the same error. |
 | **Load unpacked cannot find the extension** | Run setup from a fully extracted Windows package first. Select `%LOCALAPPDATA%\QuietTube\extension`; a source ZIP does not contain the generated extension. |
 | **Browser protection only** | Run **Setup.cmd** for the same Windows account. Reload the extension and choose **Reconnect**. If the app is closed, open QuietTube from Start. |
 | **Needs attention after changing site access** | Restore QuietTube's YouTube site access in the browser's Extensions page. Reload the extension if the popup requests it. |
