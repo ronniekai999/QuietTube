@@ -54,7 +54,7 @@ try {
         $legacy = @('[{"path":"a"},{"path":"b"}]' | ConvertFrom-Json)
         $message = $null
         try { Join-Path $package $legacy[0].path | Out-Null } catch { $message = $_.Exception.Message }
-        Expect ($legacy.Count -eq 1 -and $message -like '*System.Object[]*ChildPath*') 'The original Windows failure was not reproduced.'
+        Expect ($legacy.Count -eq 1 -and $message -is [string] -and $message.Contains('System.Object[]') -and $message.Contains('ChildPath')) 'The original Windows failure was not reproduced.'
     }
     Check 'Production setup installs successfully with Windows PowerShell 5.1' {
         & (Join-Path $package 'scripts/Setup.ps1') | Out-Host
