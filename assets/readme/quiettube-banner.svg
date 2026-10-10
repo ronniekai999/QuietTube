@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">QuietTube</title>
+  <desc id="desc">YouTube, with fewer interruptions. A Windows companion and browser extension, with a green shield and playback mark.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#151a19"/>
+      <stop offset="1" stop-color="#1d2d22"/>
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop stop-color="#b8ed9c" stop-opacity=".15"/>
+      <stop offset="1" stop-color="#b8ed9c" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#b8ed9c" fill-opacity=".07"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="360" rx="24" fill="url(#background)"/>
+  <rect width="1200" height="360" rx="24" fill="url(#grid)"/>
+  <circle cx="1010" cy="178" r="320" fill="url(#glow)"/>
+  <g fill="none" stroke="#b8ed9c" stroke-opacity=".09">
+    <circle cx="1000" cy="180" r="192"/>
+    <circle cx="1000" cy="180" r="148"/>
+    <path d="M765 180h65m340 0h30M1000 0v32m0 296v32"/>
+  </g>
+  <g font-family="Segoe UI, Inter, Arial, sans-serif">
+    <text x="64" y="69" fill="#b8ed9c" font-size="14" font-weight="700" letter-spacing="2.2">WINDOWS COMPANION + BROWSER EXTENSION</text>
+    <text x="58" y="176" fill="#edf3ed" font-size="92" font-weight="750" letter-spacing="-4">QuietTube</text>
+    <text x="64" y="226" fill="#c4d3c6" font-size="28">YouTube, with fewer interruptions.</text>
+    <g transform="translate(64 274)">
+      <rect width="76" height="30" rx="15" fill="#b8ed9c" fill-opacity=".1" stroke="#b8ed9c" stroke-opacity=".23"/>
+      <text x="38" y="20" fill="#cfeec0" font-size="13" font-weight="600" text-anchor="middle">Edge</text>
+      <rect x="88" width="94" height="30" rx="15" fill="#b8ed9c" fill-opacity=".1" stroke="#b8ed9c" stroke-opacity=".23"/>
+      <text x="135" y="20" fill="#cfeec0" font-size="13" font-weight="600" text-anchor="middle">Chrome</text>
+      <text x="208" y="20" fill="#93aa98" font-size="13">Local controls. Packaged filtering.</text>
+    </g>
+  </g>
+  <g transform="translate(888 68) scale(.4375)">
+    <rect x="8" y="8" width="496" height="496" rx="118" fill="#151a19" stroke="#4d674f" stroke-width="2.3"/>
+    <path d="m256 78 150 54-15 150-48 87-87 60-87-60-48-87-15-150Z" fill="#b8ed9c"/>
+    <rect x="193" y="165" width="22" height="163" rx="10" fill="#17301c"/>
+    <path d="m234 165 100 82-100 81Z" fill="#17301c"/>
+  </g>
+  <rect x=".5" y=".5" width="1199" height="359" rx="23.5" fill="none" stroke="#3d5241" stroke-opacity=".6"/>
+</svg>

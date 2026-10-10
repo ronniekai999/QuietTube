@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="420" viewBox="0 0 1040 420" role="img" aria-labelledby="title desc">
+  <title id="title">QuietTube architecture</title>
+  <desc id="desc">The Windows tray and native helper share local settings. The helper connects to the Edge or Chrome extension using native messaging. The extension filters YouTube in the browser.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="m0 0 10 5-10 5Z" fill="#8cbd78"/>
+    </marker>
+  </defs>
+  <rect width="1040" height="420" rx="20" fill="#151a19"/>
+  <rect x="24" y="66" width="608" height="328" rx="14" fill="#19221c" stroke="#344839"/>
+  <rect x="660" y="66" width="356" height="328" rx="14" fill="#19221c" stroke="#344839"/>
+  <g font-family="Segoe UI, Inter, Arial, sans-serif" text-anchor="middle">
+    <text x="520" y="37" fill="#edf3ed" font-size="18" font-weight="700">Local controls. Filtering inside the browser.</text>
+    <text x="328" y="96" fill="#93aa98" font-size="13" font-weight="700" letter-spacing="1.2">WINDOWS ACCOUNT</text>
+    <text x="838" y="96" fill="#93aa98" font-size="13" font-weight="700" letter-spacing="1.2">EDGE / CHROME PROFILE</text>
+    <g stroke="#b8ed9c" stroke-opacity=".3" fill="#202d24">
+      <rect x="46" y="127" width="234" height="91" rx="12"/>
+      <rect x="374" y="127" width="234" height="91" rx="12"/>
+      <rect x="210" y="286" width="244" height="86" rx="12"/>
+      <rect x="684" y="127" width="308" height="91" rx="12"/>
+      <rect x="716" y="286" width="244" height="86" rx="12"/>
+    </g>
+    <g fill="#edf3ed" font-size="19" font-weight="700">
+      <text x="163" y="164">Windows tray app</text>
+      <text x="491" y="164">Native helper</text>
+      <text x="332" y="320">Shared local state</text>
+      <text x="838" y="164">QuietTube extension</text>
+      <text x="838" y="320">YouTube</text>
+    </g>
+    <g fill="#b8caba" font-size="14">
+      <text x="163" y="190">Controls and browser status</text>
+      <text x="491" y="190">Launched by the browser</text>
+      <text x="332" y="346">Settings and acknowledgments</text>
+      <text x="838" y="190">Packaged rules and player scripts</text>
+      <text x="838" y="346">Filtering applies here</text>
+    </g>
+    <text x="645" y="242" fill="#a7c799" font-size="13">Native messaging</text>
+  </g>
+  <g fill="none" stroke="#8cbd78" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)">
+    <path d="M163 227v23h111v27"/>
+    <path d="M491 227v23H390v27"/>
+    <path d="M618 172h56"/>
+  </g>
+  <path d="M838 228v48" fill="none" stroke="#8cbd78" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x=".5" y=".5" width="1039" height="419" rx="19.5" fill="none" stroke="#344839"/>
+</svg>

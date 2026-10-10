@@ -1,85 +1,277 @@
-# QuietTube 0.1.1
+<div align="center">
 
-A private Windows 11 test build for watching YouTube in Edge or Chrome, with a Windows system-tray app and a companion Manifest V3 extension.
+<img src="assets/readme/quiettube-banner.svg" alt="QuietTube — YouTube, with fewer interruptions. A Windows companion and browser extension." width="100%">
 
-The extension is an independent modification of **uBlock Origin Lite**, by Raymond Hill and contributors. The Windows app manages shared protection settings; the existing filtering engine performs network filtering and packaged YouTube scriptlet injection. Source and license notices are included.
+**Keep the video. Quiet the interruptions.**
 
-This GitHub repository contains the application source, extension overlay, build scripts, assets, review, and test receipts for version 0.1.1. The Windows installer ZIP is a separate build output. Build the package before running setup from a source checkout.
+<br>
 
-## Install on your brother's Windows PC
+<img src="https://img.shields.io/badge/Windows-11_x64-B8ED9C?labelColor=202923" alt="Windows 11 x64 target">
+<img src="https://img.shields.io/badge/Browsers-Edge_%2B_Chrome-4D7040?labelColor=202923" alt="Edge and Chrome">
+<img src="https://img.shields.io/badge/Extension-Manifest_V3-536A5A?labelColor=202923" alt="Manifest V3 extension">
+<img src="https://img.shields.io/badge/Version-0.1.1-B8ED9C?labelColor=202923" alt="Version 0.1.1">
+<img src="https://img.shields.io/badge/License-GPL--3.0--or--later-536A5A?labelColor=202923" alt="GPL 3.0 or later">
 
-1. Copy `QuietTube-Windows-x64-0.1.1.zip` to the Windows PC and **extract the entire ZIP**. Open the extracted `QuietTube` folder.
-2. Double-click **Setup.cmd**. Setup installs the app for the current Windows account in `%LOCALAPPDATA%\QuietTube`, registers its browser companion, adds a Start menu shortcut, and enables startup on first installation. Administrator access and a separate .NET installation are not required.
-3. In Edge, open **edge://extensions**. Turn on **Developer mode**, choose **Load unpacked**, and select **%LOCALAPPDATA%\QuietTube\extension**. Select the installed folder, rather than the ZIP's temporary extraction folder.
-4. Pin QuietTube to Edge's toolbar and open its popup. It should say **Windows app connected**. The tray app should show **Edge profile 1: filtering ready**.
-5. Reload YouTube and play videos. Follow the short device checks in **TESTING.md**.
+<br>
 
-Chrome uses the same extension folder; open **chrome://extensions** and repeat the one-time extension installation there.
+[Get started](#get-started) · [Features](#features) · [Controls](#controls) · [Privacy](#privacy) · [Troubleshooting](#troubleshooting) · [Validation](#validation) · [Development](#development)
 
-This is an **unsigned private test build**. Windows may ask you to confirm running it. The package includes SHA-256 checksums for file-integrity verification; those checksums are not a publisher signature.
+</div>
 
-Setup preserves other apps’ startup entries and requires a QuietTube installation marker before replacing an existing folder. If it finds an unrecognized folder, it stops and preserves that folder for repair. Version 0.1.1 fixes all six findings from the first review; the follow-up results and validation scope are in **REVIEW.md**.
+---
 
-## Controls
+QuietTube pairs a native Windows tray app with a YouTube-focused browser extension. Watch in **Edge or Chrome**, turn protection on or off from either side, and take a 15-minute break when you need one. Connected browser profiles share the same choice.
 
-- **Turn protection off/on:** synchronizes through the Windows companion to connected browser profiles.
-- **Pause 15 minutes:** automatically resumes. Reload an already open video after changing protection; previously injected player scripts remain until that page reloads.
-- **Reload YouTube:** reloads the currently open YouTube tabs.
-- **Export diagnostics:** saves the app version, engine source/version, protection settings, browser connection state, and filtering acknowledgments. No browsing history, account cookies, page contents, or video URLs are sent to the companion.
-- **Start when I sign in:** can be changed in the Windows app. Updates preserve this choice.
-- Closing the app window keeps it in the tray. Windows shutdown and logoff are allowed to close it. **Quit tray app** exits the tray process; the extension retains its filtering settings and the browser-launched native helper continues communicating.
+The extension builds on **[uBlock Origin Lite](https://github.com/uBlockOrigin/uBOL-home)**, by Raymond Hill and contributors, with packaged network filters and YouTube player scriptlets. QuietTube adds shared Windows controls, connection status, and a focused popup. Filtering runs inside the browser; the Windows app manages settings and reports what each browser has confirmed.
 
-If the native companion is unavailable, the extension can still filter YouTube and expose local browser controls. An offline control change is queued and reconciled when the companion reconnects. The popup distinguishes browser-only protection from a connected Windows app and checks actual filtering readiness. Removing YouTube site access shows **Needs attention**, with instructions to restore access.
+> **Private preview · v0.1.1:** Windows x64 builds and 62 checks have passed on the Mac, including real Chromium/native-host integration. Execution on Windows 11, Edge playback with the intended account, and pre-roll/mid-roll ad checks are still pending. This is an unsigned test build. See [validation](#validation) for the evidence and remaining device checks.
 
-## Updates
+<a id="features"></a>
+## ✨ What you get
 
-This first private build ships packaged rules and scripts. Apply a new QuietTube ZIP by closing Edge and Chrome, running its setup, and then reloading QuietTube on the browser's Extensions page. Protection settings and the extension ID are preserved.
+- **YouTube-focused protection.** Packaged filters and player scripts are enabled for YouTube. The extension requests YouTube site access rather than access to every website.
+- **One choice across connected profiles.** A change in the tray app or popup synchronizes through the local Windows companion, with acknowledgments from each browser.
+- **A timed pause.** Pause for 15 minutes, see when protection will resume, or turn it back on sooner.
+- **Status you can act on.** Readiness checks site access, filtering mode, active rules, and YouTube script registrations. Missing access produces **Needs attention**.
+- **A native background app.** Open controls from the system tray or Start menu, choose whether to start at sign-in, and close the window to keep it in the tray.
+- **Local diagnostics.** Export versions, settings, connection state, and filtering acknowledgments when something needs investigation.
 
-**Check upstream updates** reads the latest published uBlock Origin Lite release from GitHub. It does not replace the modified extension with an upstream package. Reliable unattended distribution requires a future extension-store release or another reviewed update channel; there is no remote-code downloader or automatic binary installer in this build.
+### A small popup, right where you watch
 
-YouTube can change its ad delivery or blocking detection. An active filtering engine is not proof that every ad is removed. The actual Windows Edge pre-roll and mid-roll checks in TESTING.md are required before considering this build ready for everyday use.
+<div align="center">
 
-## Remove
+<img src="extension-preview.png" alt="Actual QuietTube popup showing protection on, pause and reload controls, and a connected native companion." width="360">
 
-Remove QuietTube from each browser's Extensions page, then run **Uninstall.cmd** from the extracted ZIP or installed folder. Type **REMOVE** when prompted. This removes QuietTube's app files, saved settings, per-user native messaging registrations, owned shortcut, and owned startup entry.
+<sub>Actual popup captured in isolated Chromium on macOS with the native helper connected. Windows tray UI validation is still pending.</sub>
 
-## Source layout
+</div>
 
-- `src/QuietTube.Tray`: native C#/.NET WinForms tray app and controls.
-- `src/QuietTube.Host`: browser-launched native messaging helper; no network listener.
-- `src/QuietTube.Core`: atomic settings, connection acknowledgments, and bounded native-message framing.
-- `extension-overlay`: custom popup and native integration overlay.
-- `extension`: generated, loadable extension with current packaged filters and original copyright notices.
-- `upstream-source.tar.gz`: matching upstream source, pinned submodule contents, and downloaded filter inputs used for this build.
-- `scripts/prepare-extension.py`: deterministic integration patches that fail visibly if upstream changes their expected targets.
-- `tests` and `src/QuietTube.Checks`: browser integration, framing, state, and installer checks.
+<a id="get-started"></a>
+## 🚀 Get started
 
-The bundled engine source is pinned in `engine-metadata.json`. The extension public key is in `extension-key.txt`; keep it to preserve the same extension ID across future builds. It is a public key, not a signing credential.
+### 1. Use the Windows package
 
-## Develop on the Mac
+| Requirement | Details |
+| --- | --- |
+| Operating system | **Windows 11 on an Intel/AMD x64 PC** |
+| Browser | **Microsoft Edge** is the primary target; Chrome uses the same extension |
+| Package | `QuietTube-Windows-x64-0.1.1.zip`, fully extracted |
+| App runtime | Included in the package; no separate .NET installation required |
+| Installation | Per Windows account, without administrator access |
 
-The scripts expect an `outputs/QuietTube` project directory beside a workspace `work/` directory. Clone into that layout:
+The Windows installer ZIP is a **separate build output**. GitHub's **Code → Download ZIP** contains source and cannot be used as the installer. Use the prepared Windows package or [build it on a Mac](#development).
 
-```sh
+### 2. Install the companion
+
+Extract the **entire ZIP**, open its `QuietTube` folder, and double-click **Setup.cmd**.
+
+Setup installs to `%LOCALAPPDATA%\QuietTube`, registers the native companion for Edge and Chrome, adds a Start menu shortcut, and starts the app. Startup at sign-in is enabled on the first installation; you can change it in the app, and updates preserve your choice.
+
+### 3. Load the extension once
+
+In **Edge**:
+
+1. Open `edge://extensions`.
+2. Turn on **Developer mode**.
+3. Choose **Load unpacked** and select this installed folder:
+
+   ```text
+   %LOCALAPPDATA%\QuietTube\extension
+   ```
+
+4. Pin QuietTube to the toolbar and open its popup.
+
+Use the **installed folder** so the extension survives removal of the extracted ZIP. For **Chrome**, repeat these steps at `chrome://extensions` using the same folder.
+
+### 4. Confirm the connection, then watch
+
+With the tray app running, the popup should show **Windows app connected** and **Protection is on**. The app's browser connection panel should show **Edge profile 1: filtering ready** for a single connected Edge profile.
+
+**Reload YouTube**, then play a video. Run the [Windows acceptance checklist](TESTING.md#windows-11-acceptance--edge-first) before relying on the build for everyday use.
+
+<details>
+<summary><strong>Verify the ZIP's integrity</strong></summary>
+
+From PowerShell in the folder containing the package:
+
+```powershell
+Get-FileHash .\QuietTube-Windows-x64-0.1.1.zip -Algorithm SHA256
+```
+
+Compare the result with the accompanying `.zip.sha256` file. Setup also verifies the package's file manifest. Checksums detect changed files; they are not a publisher signature. The private test executables are unsigned, so Windows may ask for confirmation when they run.
+
+</details>
+
+<a id="controls"></a>
+## 🎛️ Everyday controls
+
+| Control | What happens |
+| --- | --- |
+| **Turn protection off / on** | Changes the shared choice and synchronizes connected browser profiles |
+| **Pause 15 minutes** | Temporarily disables protection and automatically resumes at the displayed time |
+| **Reload YouTube** · popup | Reloads open YouTube tabs after a protection change |
+| **Reconnect** · popup | Tries to reconnect to the installed native companion |
+| **Start QuietTube when I sign in** · app | Enables or disables the per-user startup entry |
+| **Export diagnostics** · app | Saves a local JSON file with versions, settings, and browser status |
+| **Close the app window** | Keeps QuietTube running in the system tray |
+| **Quit tray app** | Exits the tray process; browser filtering retains its setting |
+
+**Reload an open video after changing protection.** Player scripts already injected into a page remain until that page reloads, even when the saved protection setting changes.
+
+The tray window does not need to stay open. The browser launches a separate native helper, so communication can continue after you quit the tray app. If the companion is unavailable, browser controls still work locally; offline changes are queued and reconciled when it reconnects.
+
+### Understand the status
+
+Protection and connection are shown separately:
+
+| Status | Meaning |
+| --- | --- |
+| **Protection is on** | The browser reports YouTube access, active rules, the required filtering mode, and registered YouTube scripts |
+| **Taking a short break** | A timed pause is active; the popup shows the resume time |
+| **Protection is off** | QuietTube filtering is disabled |
+| **Needs attention** | Filtering could not be confirmed; read the message and restore access or reload the extension |
+| **Windows app connected** | The native helper is connected and the tray app is running |
+| **Windows companion connected** | The native helper is connected; open QuietTube from Start for tray controls |
+| **Browser protection only** | The native companion is unavailable; this browser can still filter locally |
+
+“Filtering ready” confirms that the engine is configured and active. YouTube can change its ad delivery or blocking detection, so this status does not guarantee that every video ad is removed.
+
+<a id="privacy"></a>
+## 🔐 Privacy and permissions
+
+The Windows companion exchanges **settings and status** with the extension over browser native messaging. It does not collect browsing history, video URLs, account cookies, or page contents. Exported diagnostics contain app/engine versions, OS information, settings, and browser connection acknowledgments, and are saved to a file you choose.
+
+| Permission or component | Purpose |
+| --- | --- |
+| YouTube site access | Apply the packaged YouTube filtering and player scripts |
+| Declarative network rules and scripting | Run the filtering engine inside the browser |
+| Storage and alarms | Remember protection settings and resume a timed pause |
+| Native messaging | Synchronize controls with the local Windows companion |
+
+The companion has **no network listener**. Setup uses per-user native-host registrations restricted to QuietTube's exact extension ID. It does not configure a proxy, change DNS, install a root certificate, or change browser policy.
+
+Filtering rules and scripts ship with the package; remote user-script downloading is disabled. **Check upstream updates** makes a request to GitHub to read the latest published uBlock Origin Lite release. It does not download or install a replacement extension.
+
+<a id="architecture"></a>
+## 🏗️ How it works
+
+<img src="assets/readme/quiettube-architecture.svg" alt="The Windows tray app and browser-launched native helper read and write shared local settings. Edge or Chrome exchanges controls and acknowledgments with the helper over native messaging. The extension filters YouTube inside the browser." width="100%">
+
+The **tray app** provides Windows controls. The **native helper** translates browser messages into shared settings and delivers revisions back to connected profiles. The **extension** applies network rules and packaged YouTube scriptlets, then reports whether the requested state is ready. Atomic file writes preserve local state as controls move between the app and browsers.
+
+Settings and connection records live under `%LOCALAPPDATA%\QuietTube\data`. Each connected browser profile has its own acknowledgment, so the app can show a profile that is still synchronizing or needs attention.
+
+<a id="updating"></a>
+## 🔄 Update or remove
+
+### Apply a newer QuietTube package
+
+1. Close **Edge and Chrome**.
+2. Extract the newer Windows ZIP and run its **Setup.cmd**.
+3. Open the browser's Extensions page and **reload QuietTube**.
+4. Check the popup and app connection status, then reload YouTube.
+
+Setup preserves settings, the startup preference, and extension identity. It requires a valid QuietTube installation marker before replacing an existing folder. An unrecognized folder is preserved and setup stops with an error. If rollback reports a repair is needed, keep the backup folder named in the error.
+
+Updates are **manual** in this preview. The app's upstream check is informational; it does not replace QuietTube's modified extension with a stock upstream package.
+
+### Uninstall
+
+Remove QuietTube from **each browser's Extensions page**, then run **Uninstall.cmd** from the extracted package or installed folder. Type **REMOVE** when prompted.
+
+This removes the owned app files, saved settings, native messaging registrations, Start menu shortcut, and startup entry. Setup and uninstall retain unrelated apps' startup entries and reject unrecognized installation folders.
+
+<a id="troubleshooting"></a>
+## 🩺 Troubleshooting
+
+| Symptom | What to check |
+| --- | --- |
+| **Load unpacked cannot find the extension** | Run setup from a fully extracted Windows package first. Select `%LOCALAPPDATA%\QuietTube\extension`; a source ZIP does not contain the generated extension. |
+| **Browser protection only** | Run **Setup.cmd** for the same Windows account. Reload the extension and choose **Reconnect**. If the app is closed, open QuietTube from Start. |
+| **Needs attention after changing site access** | Restore QuietTube's YouTube site access in the browser's Extensions page. Reload the extension if the popup requests it. |
+| **The tray is waiting for Edge** | Confirm the extension is loaded in that browser profile, open its popup, and choose **Reconnect**. |
+| **A video behaves as before after toggling protection** | Reload the video; previously injected player scripts persist in an already open page. |
+| **An ad, playback warning, or blank player appears** | Record the browser version and reproduction steps. Try protection off and on with a reload between changes, and export diagnostics for investigation. |
+| **Setup refuses an existing folder** | Read the ownership error and preserve the folder. Keep any named rollback backup for repair. |
+| **Closing the window leaves QuietTube running** | Use **Quit tray app** to exit the tray process. Normal window close hides it to the tray. |
+
+For a report, include the Windows/browser versions, visible error, steps to reproduce, and the exported diagnostics. If a public video is needed to reproduce the issue, provide its link separately; diagnostics intentionally omit video URLs. See [the testing guide](TESTING.md) or [open an issue](https://github.com/ronniekai999/QuietTube/issues).
+
+<a id="validation"></a>
+## 🧪 What has been verified
+
+Version 0.1.1 includes **62 passing checks** across five suites. The receipts are committed alongside the source:
+
+| Suite | Passing | Evidence and scope |
+| --- | ---: | --- |
+| Core state and protocol | 10 | [Receipt](core-test-results.json): persistence, pause expiry, concurrent controls, corrupt settings, framing limits, and origin validation |
+| Bridge lifecycle | 12 | [Receipt](bridge-test-results.json): readiness, disconnects, offline intent, stale pause events, and revision ordering |
+| Installer helpers | 7 | [Receipt](installer-test-results.json): parser, file integrity, and ownership helpers |
+| Setup/uninstall regressions | 20 | [Receipt](installer-regression-results.json): filesystem, ownership, rollback, startup preservation, and installation locking; Windows boundaries substituted on macOS |
+| Real browser/native integration | 13 | [Receipt](browser-test-results.json): isolated Mac Chromium profiles, shared controls, permission loss/restoration, pause expiry, restart persistence, and controlled network blocking |
+
+A [live YouTube smoke check](youtube-smoke-results.json) also confirmed signed-out playback advancing beyond five seconds at 854 × 480, with the filtering engine ready and no engine error. Windows x64 tray and helper executables cross-compiled successfully as self-contained builds.
+
+All six findings from the first review were fixed; the [follow-up review](REVIEW.md) found no remaining actionable issues in its reviewed scope.
+
+**The remaining acceptance gate is the physical Windows 11 PC.** It covers Edge with the intended account, monetized video starts and mid-roll opportunities, PowerShell 5.1, real registry/shortcut/startup writes, file locks, and shutdown/restart. The Mac installer tests substitute Windows boundaries; the live playback check and controlled network block do not establish removal of every video ad. Follow [TESTING.md](TESTING.md) for the device pass.
+
+<a id="development"></a>
+## 🛠️ Build on a Mac
+
+The build targets **Windows x64**, including when development happens on an Apple Silicon Mac. It requires the **.NET 10 SDK**, Python with **Pillow**, Node.js, jq, OpenSSL, Git, and Bash.
+
+The scripts expect an `outputs/QuietTube` checkout beside a workspace `work/` directory. Start with this layout:
+
+```bash
 mkdir -p quiettube-workspace/outputs
 git clone https://github.com/ronniekai999/QuietTube.git quiettube-workspace/outputs/QuietTube
 cd quiettube-workspace/outputs/QuietTube
-```
 
-Run `scripts/build-mac.sh` from this project folder. It expects Python with Pillow, Node.js, jq, OpenSSL, Git, and the .NET 10 SDK. It defaults to this workspace's SDK in `work/tools/dotnet/dotnet`; set `QUIETTUBE_DOTNET` to the absolute path of another SDK's `dotnet` executable, and `QUIETTUBE_PYTHON` if Pillow is in a separate Python runtime.
-
-For a system-installed SDK, invoke the build with its executable path:
-
-```sh
 QUIETTUBE_DOTNET="$(command -v dotnet)" bash scripts/build-mac.sh
 ```
 
-The build script uses this workspace's `work/` directory for dependencies, compiler outputs, and upstream checkout. It publishes self-contained Windows x64 executables. Development on an Apple Silicon Mac does not change the Windows target architecture.
+Use `QUIETTUBE_DOTNET` for an absolute path to the SDK executable and `QUIETTUBE_PYTHON` if Pillow is installed in a separate Python runtime. Without an override, the script looks for .NET in the workspace's `work/tools/dotnet/dotnet`.
 
-Git excludes generated `bin/`, `extension/`, `checksums.json`, the upstream source archive, and installer ZIPs. The build retrieves the pinned upstream source and generates those outputs; the Windows ZIP includes the complete generated extension, matching upstream source and notices. Keep `extension-key.txt` and `extension-id.txt` in Git to preserve the extension identity.
+The build retrieves the pinned upstream source and submodules, prepares the extension overlay, runs the core checks, publishes the self-contained Windows app/helper, and packages the installer. Compiler outputs and dependencies go into `work/`; the Windows ZIP and checksum sidecar go into `outputs/`.
 
-The Mac integration tests launch isolated Playwright Chromium profiles. They register the test native host only inside those isolated profiles; your normal Chrome profile is not used. See TESTING.md for the validation boundary and commands.
+### Source map
 
-## License
+| Path | Responsibility |
+| --- | --- |
+| [QuietTube.Tray](src/QuietTube.Tray/) | Native .NET 10 / WinForms app, tray lifecycle, diagnostics, and controls |
+| [QuietTube.Host](src/QuietTube.Host/) | Browser-launched native messaging helper |
+| [QuietTube.Core](src/QuietTube.Core/) | Shared atomic settings, acknowledgments, close policy, and message framing |
+| [extension-overlay](extension-overlay/) | Focused popup and browser/native integration |
+| [prepare-extension.py](scripts/prepare-extension.py) | Integration patches that fail visibly if expected upstream targets change |
+| [Setup.ps1](scripts/Setup.ps1) · [Uninstall.ps1](scripts/Uninstall.ps1) | Per-user installation, ownership checks, integrity checks, and rollback |
+| [tests](tests/) · [QuietTube.Checks](src/QuietTube.Checks/) | Browser, bridge, installer, protocol, and state checks |
 
-GPL-3.0-or-later; see LICENSE.txt and THIRD-PARTY-NOTICES.md. QuietTube is independent of the upstream uBlock Origin project and Microsoft, Google, and YouTube.
+Generated `bin/`, `extension/`, `checksums.json`, the upstream source archive, and installer ZIPs are excluded from Git. The Windows package includes the complete extension, matching upstream source and filter inputs, and runtime notices.
+
+The filtering source is pinned to [`e5e96f6`](https://github.com/gorhill/uBlock/commit/e5e96f6765aa2a1d89044e2ce0f31f077f1dc1b6); the packaged engine version is **2026.1009.2338**. [engine-metadata.json](engine-metadata.json) records the full provenance.
+
+Retain [extension-key.txt](extension-key.txt) and [extension-id.txt](extension-id.txt) to preserve the extension ID across builds: `acolpbefjfeaanpkajgakpckmadecolp`. The key is public extension identity data, not a signing credential.
+
+### Checks and contributions
+
+See [TESTING.md](TESTING.md#run-development-checks) for development commands and their prerequisites. Browser tests use isolated Playwright profiles and a separate native-host data directory on the Mac. They do not use the normal Chrome profile or an installed Windows app's settings.
+
+Keep changes focused and describe their user-visible behavior. Changes to persistence, native messaging, permissions, setup, or uninstall should include regression coverage and the relevant device checks. Keep upstream attribution and the matching source archive when distributing a modified engine.
+
+<a id="license"></a>
+## 📄 License and credits
+
+QuietTube's integration and Windows companion are licensed under **GPL-3.0-or-later**, alongside the modified uBlock Origin Lite extension. See [LICENSE.txt](LICENSE.txt) and [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+The filtering engine is the work of **Raymond Hill and the uBlock Origin contributors**. Their copyright headers and upstream library/filter-list notices remain in the package. Self-contained Windows builds include .NET's license and third-party notices.
+
+QuietTube is an independent project, unaffiliated with the upstream uBlock Origin project, Microsoft, Google, or YouTube.
+
+---
+
+<div align="center">
+
+**YouTube, with fewer interruptions.**
+
+</div>
