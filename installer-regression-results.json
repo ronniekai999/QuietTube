@@ -1,0 +1,30 @@
+{
+  "limitation": "Windows PowerShell 5.1, real registry/COM shortcut writes, tray shutdown and Windows file locks still need the Windows PC.",
+  "method": "Production setup/uninstall executed in small isolated filesystem fixtures; Windows registry, shell and process boundaries mocked.",
+  "testedAtUtc": "2026-10-10T01:56:08.6867300Z",
+  "platform": "macOS PowerShell 7",
+  "results": [
+    "First install preserves unrelated startup entries and writes an ownership marker",
+    "Update preserves saved data and startup preference on",
+    "Update preserves saved data and startup preference off",
+    "Unknown pre-existing folder is rejected without changing files or registry",
+    "Wrong ownership marker is rejected without changing files",
+    "Malformed ownership marker is rejected: arrayMarker",
+    "Malformed ownership marker is rejected: stringSchema",
+    "A blank pre-existing native host default is preserved and rejected",
+    "Linked directories inside an owned installation are rejected before traversal or deletion",
+    "New folder appearing during setup cannot receive or lose staged files",
+    "First-install shortcut failure rolls back app and own registry values",
+    "Update failure restores old files, data, startup and exact shortcut bytes",
+    "Rollback preserves existing native host keys with unrelated values and no default",
+    "A blocked file rollback retains the old backup and still restores registry and shortcut",
+    "Failure to launch after commit preserves the completed installation",
+    "Owned uninstall removes only owned files, registration, shortcut and startup",
+    "Uninstall rejects an unknown folder before touching registrations or files",
+    "Setup rejects a different startup command containing the expected app path",
+    "Uninstall preserves a different startup command containing the expected app path",
+    "Concurrent setup/uninstall processes cannot acquire the same installation lock"
+  ],
+  "errors": [],
+  "version": "0.1.1"
+}

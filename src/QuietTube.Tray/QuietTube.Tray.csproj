@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType><TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms><EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AssemblyName>QuietTube</AssemblyName>
+    <ApplicationIcon>../../assets/quiettube.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="../QuietTube.Core/QuietTube.Core.csproj" /></ItemGroup>
+  <ItemGroup>
+    <None Include="../../extension-id.txt" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../engine-metadata.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

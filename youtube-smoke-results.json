@@ -1,0 +1,43 @@
+{
+  "testedAtUtc": "2026-10-10T01:50:30.693Z",
+  "platform": "macOS Chromium, signed out",
+  "playbackObserved": true,
+  "limitation": "One signed-out Mac playback smoke test cannot establish Windows Edge compatibility or comprehensive video-ad removal.",
+  "testVideoUrl": "https://www.youtube.com/watch?v=t6MAZW-joCo",
+  "video": {
+    "currentTime": 5.033012,
+    "readyState": 4,
+    "paused": false,
+    "playerShowingAd": false,
+    "dimensions": [
+      854,
+      480
+    ]
+  },
+  "engine": {
+    "enabled": true,
+    "effectiveEnabled": true,
+    "pausedUntilUtc": null,
+    "revision": 1,
+    "siteAccess": true,
+    "youtubeMode": 2,
+    "enabledRulesets": 6,
+    "registeredScripts": 5,
+    "engineError": null,
+    "filteringReady": true,
+    "settingsApplied": true,
+    "connected": true,
+    "appRunning": false,
+    "connectionError": null,
+    "browser": "Chrome",
+    "extensionVersion": "0.1.1",
+    "engine": {
+      "name": "uBlock Origin Lite",
+      "version": "2026.1009.2338",
+      "source": "https://github.com/gorhill/uBlock",
+      "commit": "e5e96f6765aa2a1d89044e2ce0f31f077f1dc1b6",
+      "builtAtUtc": "2026-10-09",
+      "quiettubeVersion": "0.1.1"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>QuietTube</title><link rel="stylesheet" href="popup.css"></head>
+<body>
+  <header><span class="mark" aria-hidden="true">▶</span><div><h1>QuietTube</h1><p>YouTube, with fewer interruptions.</p></div></header>
+  <main>
+    <section class="protection"><span id="pill" class="pill">Checking</span><h2 id="headline">Connecting…</h2><p id="detail" aria-live="polite">Checking the filtering engine.</p></section>
+    <button id="toggle" class="primary" disabled>Checking protection…</button>
+    <div class="pair"><button id="pause" disabled>Pause 15 minutes</button><button id="reload" disabled>Reload YouTube</button></div>
+    <section class="connection"><div><span class="dot" id="dot"></span><strong id="connection">Checking Windows app</strong></div><p id="connectionDetail">You can use YouTube in your usual browser.</p><button id="reconnect" class="text">Reconnect</button></section>
+    <p class="notice" id="notice" role="status"></p>
+  </main>
+  <footer><a href="help.html" target="_blank">Setup &amp; troubleshooting</a><span id="version"></span></footer>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

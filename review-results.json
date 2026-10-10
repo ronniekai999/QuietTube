@@ -1,0 +1,36 @@
+{
+  "reviewedAtUtc": "2026-10-10T01:56:53.472981+00:00",
+  "version": "0.1.1",
+  "originalFindingsResolved": 6,
+  "remainingActionableFindings": [],
+  "testCounts": {
+    "core-test-results.json": 10,
+    "bridge-test-results.json": 12,
+    "installer-test-results.json": 7,
+    "installer-regression-results.json": 20,
+    "browser-test-results.json": 13
+  },
+  "totalPassingChecks": 62,
+  "livePlaybackSmokePassed": true,
+  "reviewedFiles": {
+    "scripts/Setup.ps1": "45d189bf9325ade5f079a9899110a5350bd30812de2ff6237918f912f583fffa",
+    "scripts/Uninstall.ps1": "4fe1278e56a4079b8d874fd385307ef732ef4e4f344e55382d052c71bba4d6cd",
+    "scripts/Install-Helpers.ps1": "c86904d24d87a57e59997b46011b0e880f844271bb3c9701ac540c9089155c58",
+    "extension-overlay/bridge.js": "f8ccbaa6ddabd935b369132126d620dc331b4ecad55b749c1c4f156ca181b66b",
+    "extension-overlay/popup.js": "5508373f9eb49e013c671c6bc00542ce3d9ec6055884190ee20e9365a071b69d",
+    "extension/js/quiettube/bridge.js": "f8ccbaa6ddabd935b369132126d620dc331b4ecad55b749c1c4f156ca181b66b",
+    "extension/quiettube/popup.js": "5508373f9eb49e013c671c6bc00542ce3d9ec6055884190ee20e9365a071b69d",
+    "src/QuietTube.Host/Program.cs": "b2d30d3354b579b46b37ffd64ae1944d215e2c89b44e4a24ed7c2cf4784ad14b",
+    "src/QuietTube.Core/ClientStatus.cs": "dc249a172ef3584036ae138399030cc80c748018f21226887a71ba163a4f114f",
+    "src/QuietTube.Core/ClosePolicy.cs": "9c76af5dba9da0536b862d21596c1696b4989dcc437999ae61759da0df01f222",
+    "src/QuietTube.Core/SettingsStore.cs": "c1b3119be7d50624ff1069eb3217a09d252264dffc8be1927d8858f1725559de",
+    "src/QuietTube.Core/NativeFrames.cs": "60d0d12a02355106419c94b493429fc8c91a4b1d8e17d88ca2c79e8050464c88",
+    "src/QuietTube.Tray/MainWindow.cs": "5e50f0e3c99f556f784e3792ab85c2ad03cffcede25814d54341f1e7e9ed6eb1"
+  },
+  "report": "REVIEW.md",
+  "limitations": [
+    "Windows 11 Edge runtime acceptance pending",
+    "Windows PowerShell 5.1 and actual registry, shortcut, startup, file-lock and shutdown behavior pending",
+    "Comprehensive pre-roll and mid-roll video-ad removal requires the brother's usual account and videos"
+  ]
+}

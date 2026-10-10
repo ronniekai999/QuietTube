@@ -1,0 +1,15 @@
+{
+  "passed": [
+    "Saved off state survives a new store",
+    "Pause expires and explicit off does not expire",
+    "Concurrent controllers preserve every revision",
+    "Corrupt or incomplete settings fail visibly",
+    "Native messages round-trip and clean EOF is accepted",
+    "Partial native frames are rejected",
+    "Zero, oversized, and malformed native payloads are rejected",
+    "Native origin is restricted to the exact extension",
+    "Connection alone never counts as confirmed protection",
+    "Windows shutdown and application exit are never cancelled by close-to-tray"
+  ],
+  "failed": []
+}

@@ -1,0 +1,20 @@
+{
+  "testedAtUtc": "2026-10-10T01:50:28.727Z",
+  "version": "0.1.1",
+  "results": [
+    "Permission loss reports attention; restoring access restores readiness and badge",
+    "Scripts on unrelated sites cannot count as YouTube readiness",
+    "Delayed alarm from an old pause cannot end a new pause",
+    "Offline pause automatically expires; explicit off stays off",
+    "Connected pause expiry consults current native settings before resuming",
+    "Disconnect invalidates queued state and permits an offline off command",
+    "Losing the companion at pause expiry still resumes browser protection",
+    "Disconnect during persistence restores the last committed state",
+    "Acknowledging an old offline change cannot erase a newer offline change",
+    "Messages from an old port cannot overwrite a new connection",
+    "Older native revisions cannot revert acknowledged settings",
+    "A disconnect during a popup command preserves its intent offline"
+  ],
+  "errors": [],
+  "method": "Production bridge with mocked Chrome/native boundaries and controllable clock; complements real-browser tests."
+}

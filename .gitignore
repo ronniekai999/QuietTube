@@ -1,0 +1,13 @@
+bin/
+obj/
+extension/
+upstream-source.tar.gz
+checksums.json
+*.zip
+*.zip.sha256
+.build/
+work/
+node_modules/
+__pycache__/
+*.py[cod]
+.DS_Store
