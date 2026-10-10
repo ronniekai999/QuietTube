@@ -3,7 +3,7 @@ namespace QuietTube.Core;
 public static class AppPaths
 {
     public const string HostName = "com.quiettube.companion";
-    public const string Version = "0.1.1";
+    public const string Version = "0.1.2";
     // The public key and exact extension ID are generated once and checked by the build.
     public static string ExtensionId => File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "extension-id.txt")).Trim();
     public static string DataDirectory => Environment.GetEnvironmentVariable("QUIETTUBE_DATA_DIR")

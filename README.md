@@ -26,7 +26,7 @@ QuietTube pairs a native Windows tray app with a YouTube-focused browser extensi
 
 The extension builds on **[uBlock Origin Lite](https://github.com/uBlockOrigin/uBOL-home)**, by Raymond Hill and contributors, with packaged network filters and YouTube player scriptlets. QuietTube adds shared Windows controls, connection status, and a focused popup. Filtering runs inside the browser; the Windows app manages settings and reports what each browser has confirmed.
 
-> **Preview · v0.1.2:** Windows x64 builds and 62 checks have passed on the Mac, including real Chromium/native-host integration. Execution on Windows 11, Edge playback with the intended account, and pre-roll/mid-roll ad checks are still pending. This is an unsigned test build. See [validation](#validation) for the evidence and remaining device checks.
+> **Preview · v0.1.2:** Windows x64 builds and 64 Mac checks have passed, including real Chromium/native-host integration. Another 37 installer checks pass on Windows with PowerShell 5.1, including real registry and shortcut operations. The Windows 11 tray, Edge playback with the intended account, and pre-roll/mid-roll ad checks still need the physical PC. This is an unsigned test build. See [validation](#validation) for the evidence and remaining device checks.
 
 <a id="features"></a>
 ## ✨ What you get
@@ -189,6 +189,7 @@ This removes the owned app files, saved settings, native messaging registrations
 | Symptom | What to check |
 | --- | --- |
 | **“checksums.json is missing”** | Download [QuietTube-Windows-x64-0.1.2.zip](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.2/QuietTube-Windows-x64-0.1.2.zip) and extract it completely. GitHub's source ZIP does not contain the installer payload; repeatedly extracting that source ZIP will produce the same error. |
+| **“Cannot convert 'System.Object[]' … 'ChildPath'”** | Version 0.1.1 had a Windows PowerShell 5.1 checksum-parser bug. Download the 0.1.2 Windows installer above and extract it into a fresh folder. Re-extracting 0.1.1 cannot fix this error. The failed checksum preflight makes no installation changes. |
 | **Load unpacked cannot find the extension** | Run setup from a fully extracted Windows package first. Select `%LOCALAPPDATA%\QuietTube\extension`; a source ZIP does not contain the generated extension. |
 | **Browser protection only** | Run **Setup.cmd** for the same Windows account. Reload the extension and choose **Reconnect**. If the app is closed, open QuietTube from Start. |
 | **Needs attention after changing site access** | Restore QuietTube's YouTube site access in the browser's Extensions page. Reload the extension if the popup requests it. |
@@ -203,21 +204,23 @@ For a report, include the Windows/browser versions, visible error, steps to repr
 <a id="validation"></a>
 ## 🧪 What has been verified
 
-Version 0.1.2 includes **62 passing checks** across five suites. The receipts are committed alongside the source:
+Version 0.1.2 includes **64 passing Mac checks** across five suites. The receipts are committed alongside the source:
 
 | Suite | Passing | Evidence and scope |
 | --- | ---: | --- |
 | Core state and protocol | 10 | [Receipt](core-test-results.json): persistence, pause expiry, concurrent controls, corrupt settings, framing limits, and origin validation |
 | Bridge lifecycle | 12 | [Receipt](bridge-test-results.json): readiness, disconnects, offline intent, stale pause events, and revision ordering |
-| Installer helpers | 7 | [Receipt](installer-test-results.json): parser, file integrity, and ownership helpers |
+| Installer helpers | 9 | [Receipt](installer-test-results.json): parser, file integrity, legacy JSON array handling, and malformed checksum fields |
 | Setup/uninstall regressions | 20 | [Receipt](installer-regression-results.json): filesystem, ownership, rollback, startup preservation, and installation locking; Windows boundaries substituted on macOS |
 | Real browser/native integration | 13 | [Receipt](browser-test-results.json): isolated Mac Chromium profiles, shared controls, permission loss/restoration, pause expiry, restart persistence, and controlled network blocking |
 
 A [live YouTube smoke check](youtube-smoke-results.json) also confirmed signed-out playback advancing beyond five seconds at 854 × 480, with the filtering engine ready and no engine error. Windows x64 tray and helper executables cross-compiled successfully as self-contained builds.
 
+**37 installer checks also pass on Windows Server 2022 with Windows PowerShell 5.1**, the shell used by `Setup.cmd`: [9 helper checks](windows-installer-test-results.json), [20 lifecycle regressions](windows-installer-regression-results.json), and [8 Windows integration checks](windows-integration-results.json). Integration executes production setup/update/uninstall with real HKCU registry keys, COM Start menu shortcuts, and process launch; small fixture executables keep this separate from tray and browser acceptance. [Windows CI](https://github.com/ronniekai999/QuietTube/actions/workflows/windows-installer.yml) repeats these checks on each change.
+
 All six findings from the first review were fixed; the [follow-up review](REVIEW.md) found no remaining actionable issues in its reviewed scope.
 
-**The remaining acceptance gate is the physical Windows 11 PC.** It covers Edge with the intended account, monetized video starts and mid-roll opportunities, PowerShell 5.1, real registry/shortcut/startup writes, file locks, and shutdown/restart. The Mac installer tests substitute Windows boundaries; the live playback check and controlled network block do not establish removal of every video ad. Follow [TESTING.md](TESTING.md) for the device pass.
+**The remaining acceptance gate is the physical Windows 11 PC.** It covers the actual tray app, Edge with the intended account, monetized video starts and mid-roll opportunities, login startup, file locks, and shutdown/restart. The Windows installer checks use fixture executables; the live playback check and controlled network block do not establish removal of every video ad. Follow [TESTING.md](TESTING.md) for the device pass.
 
 <a id="development"></a>
 ## 🛠️ Build on a Mac

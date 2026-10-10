@@ -14,9 +14,19 @@ The controlled network test proves that the filtering integration works. It does
 
 `bridge-test-results.json` records twelve lifecycle regressions: permission readiness, script scope, stale pause events, pause expiry, queued disconnects, interrupted persistence, offline intent acknowledgment, old-port events and native revision ordering.
 
-`installer-test-results.json` records seven parser/integrity/helper checks. `installer-regression-results.json` records twenty full setup/uninstall scenarios using small real filesystem fixtures with Windows registry, shell and process boundaries substituted. These cover other apps’ startup values, preserved on/off preference and data, ownership rejection, linked directories, destination collision, rollback, exact shortcut restoration, blocked file rollback, launch failure, uninstall scope and concurrent installation locking. Windows registry, Start menu, startup, PowerShell 5.1, real file locks and tray behavior still require the physical Windows PC.
+`installer-test-results.json` records nine parser/integrity/helper checks, including the legacy JSON array behavior that broke setup on Windows PowerShell 5.1. `installer-regression-results.json` records twenty full setup/uninstall scenarios using small real filesystem fixtures with Windows registry, shell and process boundaries substituted. These cover other apps’ startup values, preserved on/off preference and data, ownership rejection, linked directories, destination collision, rollback, exact shortcut restoration, blocked file rollback, launch failure, uninstall scope and concurrent installation locking.
 
 `REVIEW.md` records the six resolved findings and the follow-up review.
+
+## Verified on Windows PowerShell 5.1
+
+The [Windows installer workflow](https://github.com/ronniekai999/QuietTube/actions/workflows/windows-installer.yml) runs on a disposable Windows Server 2022 runner using `powershell.exe`, matching the shell selected by `Setup.cmd`. It verifies the version rather than substituting PowerShell 7.
+
+- `windows-installer-test-results.json`: 9 helper checks, including valid multi-entry checksum manifests and rejection of damaged payloads.
+- `windows-installer-regression-results.json`: 20 setup/uninstall scenarios with Windows boundaries substituted and real Windows filesystem/mutex behavior.
+- `windows-integration-results.json`: 8 checks that reproduce the original `System.Object[]`/`ChildPath` error and exercise the fixed production setup/update/uninstall with real HKCU browser registrations, native-host JSON, COM Start menu shortcuts, process launch, startup preservation, saved data, and damaged-package rejection.
+
+Integration uses small fixture executables and a fixture extension. Only the instructions-page launch and unattended uninstall answer are substituted; registry writes, shortcut creation, and executable launch use Windows APIs. This verifies installation behavior, while the real tray app, Edge connection, filtering, login startup and reboot still require the Windows 11 PC. The workflow retains detailed logs and receipts as an artifact.
 
 ## Windows 11 acceptance — Edge first
 

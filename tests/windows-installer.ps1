@@ -34,6 +34,8 @@ Add-Type -TypeDefinition 'public class InstallerProcessFixture { public static v
 Copy-Item (Join-Path $package 'bin/QuietTube.exe') (Join-Path $package 'bin/QuietTube.Host.exe')
 [IO.File]::WriteAllText((Join-Path $package 'extension/manifest.json'), '{}')
 [IO.File]::WriteAllText((Join-Path $package 'START-HERE.html'), '<html><body>Installer fixture</body></html>')
+New-Item -ItemType Directory -Path (Join-Path $package '.github/workflows') -Force | Out-Null
+[IO.File]::WriteAllText((Join-Path $package '.github/workflows/fixture.yml'), 'fixture workflow')
 $entries = @(Get-ChildItem $package -File -Recurse | ForEach-Object {
     @{path=$_.FullName.Substring($package.Length + 1).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}
 })
@@ -59,6 +61,7 @@ try {
     Check 'Production setup installs successfully with Windows PowerShell 5.1' {
         & (Join-Path $package 'scripts/Setup.ps1') | Out-Host
         Expect ((Test-Path (Join-Path $installed 'bin/QuietTube.exe')) -and (Assert-QuietTubeOwnedInstallation -InstallRoot $installed -ExtensionId $id)) 'Installed payload or ownership marker missing.'
+        Assert-QuietTubePackage -SourceRoot $installed | Out-Null
     }
     Check 'Both real browser registry registrations point to the BOM-free native host' {
         $manifestPath = Join-Path $installed 'native-host.json'

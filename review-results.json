@@ -1,21 +1,21 @@
 {
-  "reviewedAtUtc": "2026-10-10T01:56:53.472981+00:00",
-  "version": "0.1.1",
+  "reviewedAtUtc": "2026-10-10T03:56:02.528978+00:00",
+  "version": "0.1.2",
   "originalFindingsResolved": 6,
   "remainingActionableFindings": [],
   "testCounts": {
     "core-test-results.json": 10,
     "bridge-test-results.json": 12,
-    "installer-test-results.json": 7,
+    "installer-test-results.json": 9,
     "installer-regression-results.json": 20,
     "browser-test-results.json": 13
   },
-  "totalPassingChecks": 62,
+  "totalPassingChecks": 64,
   "livePlaybackSmokePassed": true,
   "reviewedFiles": {
-    "scripts/Setup.ps1": "45d189bf9325ade5f079a9899110a5350bd30812de2ff6237918f912f583fffa",
+    "scripts/Setup.ps1": "3264b01c2bde5173e16de2ab8ecf754a18ffdf9f75ca8625790fc04ccf6b1d64",
     "scripts/Uninstall.ps1": "4fe1278e56a4079b8d874fd385307ef732ef4e4f344e55382d052c71bba4d6cd",
-    "scripts/Install-Helpers.ps1": "c86904d24d87a57e59997b46011b0e880f844271bb3c9701ac540c9089155c58",
+    "scripts/Install-Helpers.ps1": "b79f44fd4e5127d52670ff4b51e5df0e186f10f5e6758f9a6d9b1386ce63153e",
     "extension-overlay/bridge.js": "f8ccbaa6ddabd935b369132126d620dc331b4ecad55b749c1c4f156ca181b66b",
     "extension-overlay/popup.js": "5508373f9eb49e013c671c6bc00542ce3d9ec6055884190ee20e9365a071b69d",
     "extension/js/quiettube/bridge.js": "f8ccbaa6ddabd935b369132126d620dc331b4ecad55b749c1c4f156ca181b66b",
@@ -25,12 +25,23 @@
     "src/QuietTube.Core/ClosePolicy.cs": "9c76af5dba9da0536b862d21596c1696b4989dcc437999ae61759da0df01f222",
     "src/QuietTube.Core/SettingsStore.cs": "c1b3119be7d50624ff1069eb3217a09d252264dffc8be1927d8858f1725559de",
     "src/QuietTube.Core/NativeFrames.cs": "60d0d12a02355106419c94b493429fc8c91a4b1d8e17d88ca2c79e8050464c88",
-    "src/QuietTube.Tray/MainWindow.cs": "5e50f0e3c99f556f784e3792ab85c2ad03cffcede25814d54341f1e7e9ed6eb1"
+    "src/QuietTube.Tray/MainWindow.cs": "5e50f0e3c99f556f784e3792ab85c2ad03cffcede25814d54341f1e7e9ed6eb1",
+    "src/QuietTube.Core/AppPaths.cs": "834a4d9018e610f32096d27e34c0ced17b843c53102c7b38b4a8193bed11e607",
+    "tests/windows-installer.ps1": "b53e11b58ea482164b6a3670d4ad972b390677703e2ee3addfdfde426b1ad2f8",
+    "tests/installer-checks.ps1": "2838b98c26a702318d0349ad1ec3b6838e80ecc347a8e2f4f1e5bab7cc164569"
   },
   "report": "REVIEW.md",
   "limitations": [
-    "Windows 11 Edge runtime acceptance pending",
-    "Windows PowerShell 5.1 and actual registry, shortcut, startup, file-lock and shutdown behavior pending",
+    "Windows 11 tray app, Edge native connection and playback acceptance pending",
+    "Login startup, real Windows file-lock recovery, and shutdown/reboot behavior need the physical PC",
     "Comprehensive pre-roll and mid-roll video-ad removal requires the brother's usual account and videos"
-  ]
+  ],
+  "reportedInstallerFindingsResolved": 1,
+  "windowsTestCounts": {
+    "windows-installer-test-results.json": 9,
+    "windows-installer-regression-results.json": 20,
+    "windows-integration-results.json": 8
+  },
+  "windowsPassingChecks": 37,
+  "windowsValidationRun": "https://github.com/ronniekai999/QuietTube/actions/runs/38021562477"
 }

@@ -59,6 +59,9 @@ try {
     foreach ($name in @('bin', 'extension', 'scripts', 'src', 'assets', 'extension-overlay', 'tests')) {
         Copy-Item -LiteralPath (Join-Path $sourceRoot $name) -Destination $staging -Recurse
     }
+    # Preserve CI source included in newer packages without requiring it in old ones.
+    $workflowSource = Join-Path $sourceRoot '.github'
+    if (Test-Path -LiteralPath $workflowSource -PathType Container) { Copy-Item -LiteralPath $workflowSource -Destination $staging -Recurse }
     # Keep the complete source, notices, and verification receipts together.
     foreach ($file in (Get-ChildItem -LiteralPath $sourceRoot -File -Force)) {
         Copy-Item -LiteralPath $file.FullName -Destination $staging

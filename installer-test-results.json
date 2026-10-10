@@ -1,14 +1,16 @@
 {
+  "limitation": "These helper checks do not exercise real registry writes, shortcuts, startup, Windows file locks, or the tray UI.",
   "results": [
     "All installer scripts parse",
     "Edge and Chrome receive two separate registry keys",
     "Valid package files pass integrity validation",
+    "Legacy JSON array output validates each package entry separately",
+    "Array-valued checksum fields are rejected",
     "Modified payload is rejected before installation",
     "Missing executable is rejected",
     "Package paths cannot escape the extracted folder",
     "Native-host JSON is UTF8 without a BOM and uses the exact origin"
   ],
-  "limitation": "Windows PowerShell 5.1, Windows registry writes, shortcuts, startup, rollback under Windows file locks, and tray UI are still physical-PC acceptance checks.",
-  "errors": [],
-  "platform": "macOS PowerShell 7.6.6"
+  "platform": "Unix 27.2.0; PowerShell 7.6.6",
+  "errors": []
 }

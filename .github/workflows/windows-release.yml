@@ -1,0 +1,113 @@
+name: Build Windows preview
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the verified Windows ZIP as a preview release
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  windows-installation:
+    uses: ./.github/workflows/windows-installer.yml
+
+  package:
+    needs: windows-installation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        with:
+          dotnet-version: 10.0.401
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Build the self-contained Windows package
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install Pillow==12.3.0
+          QUIETTUBE_RELEASE_ROOT="$RUNNER_TEMP/quiettube-release"
+          QUIETTUBE_PROJECT="$QUIETTUBE_RELEASE_ROOT/outputs/QuietTube"
+          mkdir -p "$QUIETTUBE_PROJECT" "$QUIETTUBE_RELEASE_ROOT/work/tests"
+          cp -a "$GITHUB_WORKSPACE/." "$QUIETTUBE_PROJECT/"
+          QUIETTUBE_DOTNET="$(command -v dotnet)" QUIETTUBE_PYTHON="$(command -v python)" bash "$QUIETTUBE_PROJECT/scripts/build-mac.sh"
+          echo "QUIETTUBE_RELEASE_OUTPUT=$QUIETTUBE_RELEASE_ROOT/outputs" >> "$GITHUB_ENV"
+      - name: Verify every archive member and the release version
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib, json, os, pathlib, re, zipfile
+          output = pathlib.Path(os.environ['QUIETTUBE_RELEASE_OUTPUT'])
+          packages = list(output.glob('QuietTube-Windows-x64-*.zip'))
+          assert len(packages) == 1
+          package = packages[0]
+          with zipfile.ZipFile(package) as z:
+              assert z.testzip() is None
+              entries = json.loads(z.read('QuietTube/checksums.json'))
+              assert len(z.namelist()) == len(set(z.namelist()))
+              assert set(z.namelist()) == {'QuietTube/' + e['path'] for e in entries} | {'QuietTube/checksums.json'}
+              for e in entries:
+                  assert '..' not in pathlib.PurePosixPath(e['path']).parts
+                  assert hashlib.sha256(z.read('QuietTube/' + e['path'])).hexdigest() == e['sha256'], e['path']
+              manifest = json.loads(z.read('QuietTube/extension/manifest.json'))
+              version = manifest['version']
+              assert re.fullmatch(r'\d+\.\d+\.\d+', version)
+              assert package.name == 'QuietTube-Windows-x64-' + version + '.zip'
+              assert json.loads(z.read('QuietTube/engine-metadata.json'))['quiettubeVersion'] == version
+              assert z.read('QuietTube/engine-metadata.json') == z.read('QuietTube/bin/engine-metadata.json')
+              assert z.read('QuietTube/extension-overlay/bridge.js') == z.read('QuietTube/extension/js/quiettube/bridge.js')
+              assert manifest['host_permissions'] == ['https://*.youtube.com/*']
+              assert 'nativeMessaging' in manifest['permissions'] and 'userScripts' not in manifest['permissions']
+              for name in ['QuietTube.exe', 'QuietTube.Host.exe']:
+                  assert z.read('QuietTube/bin/' + name)[:2] == b'MZ'
+          checksum = hashlib.sha256(package.read_bytes()).hexdigest()
+          assert pathlib.Path(str(package) + '.sha256').read_text().strip() == checksum + '  ' + package.name
+          ref = os.environ['GITHUB_REF']
+          if ref.startswith('refs/tags/'):
+              assert ref == 'refs/tags/v' + version
+          notes = f'''QuietTube {version} fixes Windows PowerShell 5.1 setup compatibility.
+
+          Download **{package.name}** below, extract it completely, and run **Setup.cmd**. GitHub's automatic Source code ZIP contains developer source and cannot install the app.
+
+          Setup installs for the current Windows account. In Edge, open edge://extensions, enable Developer mode, choose Load unpacked, and select %LOCALAPPDATA%\\QuietTube\\extension. Pin QuietTube and confirm Windows app connected.
+
+          The release build depends on passing Windows PowerShell 5.1 installer checks, including real registry/shortcut operations. The physical Windows 11 tray, Edge filtering and reboot checks remain pending. This is an unsigned preview.
+
+          SHA-256: `{checksum}`
+          '''
+          (output / 'release-notes.md').write_text(notes)
+          with open(os.environ['GITHUB_ENV'], 'a') as env:
+              env.write('QUIETTUBE_RELEASE_VERSION=' + version + '\n')
+              env.write('QUIETTUBE_RELEASE_PACKAGE=' + str(package) + '\n')
+          print(json.dumps({'package': package.name, 'sha256': checksum, 'checksummedFiles': len(entries)}))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: QuietTube-Windows-x64
+          path: |
+            ${{ env.QUIETTUBE_RELEASE_PACKAGE }}
+            ${{ env.QUIETTUBE_RELEASE_PACKAGE }}.sha256
+      - name: Publish Windows preview
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.publish
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create "v$QUIETTUBE_RELEASE_VERSION" "$QUIETTUBE_RELEASE_PACKAGE" "$QUIETTUBE_RELEASE_PACKAGE.sha256" --repo "$GITHUB_REPOSITORY" --verify-tag --prerelease --title "QuietTube $QUIETTUBE_RELEASE_VERSION - Windows preview" --notes-file "$QUIETTUBE_RELEASE_OUTPUT/release-notes.md"

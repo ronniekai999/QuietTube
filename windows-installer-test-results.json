@@ -1,0 +1,18 @@
+{
+  "platform": "Microsoft Windows NT 10.0.20348.0; PowerShell 5.1.20348.5622",
+  "errors": [],
+  "limitation": "These helper checks do not exercise real registry writes, shortcuts, startup, Windows file locks, or the tray UI.",
+  "results": [
+    "All installer scripts parse",
+    "Edge and Chrome receive two separate registry keys",
+    "Valid package files pass integrity validation",
+    "Legacy JSON array output validates each package entry separately",
+    "Array-valued checksum fields are rejected",
+    "Modified payload is rejected before installation",
+    "Missing executable is rejected",
+    "Package paths cannot escape the extracted folder",
+    "Native-host JSON is UTF8 without a BOM and uses the exact origin"
+  ],
+  "sourceCommit": "a54d330cc208b49c925c88814c11b0aa80c026a4",
+  "workflowRun": "https://github.com/ronniekai999/QuietTube/actions/runs/38021562477"
+}

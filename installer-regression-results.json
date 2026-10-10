@@ -1,8 +1,6 @@
 {
-  "limitation": "Windows PowerShell 5.1, real registry/COM shortcut writes, tray shutdown and Windows file locks still need the Windows PC.",
-  "method": "Production setup/uninstall executed in small isolated filesystem fixtures; Windows registry, shell and process boundaries mocked.",
-  "testedAtUtc": "2026-10-10T01:56:08.6867300Z",
-  "platform": "macOS PowerShell 7",
+  "platform": "Unix 27.2.0; PowerShell 7.6.6",
+  "limitation": "Real registry/COM shortcut writes, tray shutdown and Windows file locks need Windows integration or physical-PC checks.",
   "results": [
     "First install preserves unrelated startup entries and writes an ownership marker",
     "Update preserves saved data and startup preference on",
@@ -26,5 +24,7 @@
     "Concurrent setup/uninstall processes cannot acquire the same installation lock"
   ],
   "errors": [],
-  "version": "0.1.1"
+  "version": "0.1.2",
+  "method": "Production setup/uninstall executed in small isolated filesystem fixtures; Windows registry, shell and process boundaries mocked.",
+  "testedAtUtc": "2026-10-10T03:55:11.2329410Z"
 }

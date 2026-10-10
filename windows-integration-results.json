@@ -1,0 +1,19 @@
+{
+  "results": [
+    "PowerShell 5.1 reproduces the original ChildPath array error",
+    "Production setup installs successfully with Windows PowerShell 5.1",
+    "Both real browser registry registrations point to the BOM-free native host",
+    "Real COM creates the Start menu shortcut with the correct target",
+    "First install preserves an unrelated real Windows startup value",
+    "A real Windows update preserves saved data and disabled startup",
+    "Production uninstall removes owned Windows state and preserves unrelated startup",
+    "Damaged package is rejected before Windows installation writes"
+  ],
+  "method": "Production setup/update/uninstall with real HKCU registry, WScript.Shell shortcuts, and Windows process launch in an isolated fixture.",
+  "errors": [],
+  "limitation": "Fixture executables and extension do not test the tray UI, browser connection, filtering, or reboot.",
+  "platform": "Microsoft Windows NT 10.0.20348.0; PowerShell 5.1.20348.5622",
+  "testedAtUtc": "2026-10-10T03:43:52.0810947Z",
+  "sourceCommit": "a54d330cc208b49c925c88814c11b0aa80c026a4",
+  "workflowRun": "https://github.com/ronniekai999/QuietTube/actions/runs/38021562477"
+}

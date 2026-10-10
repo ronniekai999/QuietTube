@@ -1,6 +1,8 @@
 # QuietTube 0.1.2 review
 
-All six findings from the first review are fixed. The follow-up review found no remaining actionable issues in the reviewed code after the additional fixes below. This is a source and package review with Mac validation; Windows runtime acceptance is still pending.
+All six findings from the first review are fixed. Version 0.1.2 also fixes the checksum-parser failure reported during installation on Windows PowerShell 5.1. Source/package checks pass on the Mac, and installer checks pass on a Windows Server 2022 runner; Windows 11 tray and Edge acceptance remain pending.
+
+The reported error occurred because `@(ConvertFrom-Json ...)` wrapped PowerShell 5.1's top-level JSON array in another array. Reading an entry's `path` then produced many paths, and `Join-Path` rejected that value for its scalar `ChildPath` parameter. Setup now assigns the parsed value before normalizing it into entries, and checks that paths and hashes are strings. A Windows test reproduces the original error, then completes installation with the production fix. Hash verification still runs before any installation writes.
 
 | Original finding | Resolution | Validation |
 | --- | --- | --- |
@@ -26,11 +28,15 @@ Validation receipts are included beside this report:
 
 - `core-test-results.json`: 10 passing core checks.
 - `bridge-test-results.json`: 12 passing lifecycle and readiness regressions using the production bridge with controlled Chrome/native boundaries.
-- `installer-test-results.json`: 7 passing parser, integrity and installer-helper checks.
+- `installer-test-results.json`: 9 passing parser, integrity and installer-helper checks.
 - `installer-regression-results.json`: 20 passing setup/uninstall scenarios. These execute the production filesystem, ownership, checksum, mutex and rollback paths with Windows registry, shell and process boundaries substituted on the Mac. A simulated locked-file failure checks recovery behavior; it does not establish real Windows file-lock behavior.
 - `browser-test-results.json`: 13 passing real Chromium/native-host integration checks in isolated Mac profiles, including actual DNR blocking on a controlled YouTube page, permission loss/restoration and automatic native pause expiration with a short fixture deadline.
 - `youtube-smoke-results.json`: a signed-out live YouTube video played beyond five seconds at 854 × 480 with the engine ready and no engine error.
 
-The Windows x64 tray app and helper publish successfully as self-contained executables. Windows 11 Edge, PowerShell 5.1, real registry/shortcut/startup writes, system shutdown and playback with the brother’s usual account still require the nearby PC. A successful playback smoke test and a controlled network block do not establish removal of all pre-roll or mid-roll video ads. Use `TESTING.md` for that acceptance pass.
+The Windows x64 tray app and helper publish successfully as self-contained executables. Another 37 installer checks pass on Windows PowerShell 5.1: 9 helper checks, 20 lifecycle regressions, and 8 integration checks. The integration fixture uses real Windows registry keys, COM shortcuts and executable launch, with fixture executables instead of the tray app. Receipts are `windows-installer-test-results.json`, `windows-installer-regression-results.json`, and `windows-integration-results.json`.
+
+The focused follow-up review checked checksum-array normalization, scalar validation before path operations, tamper rejection, unchanged extension identity, version consistency, rollback and startup preservation, and the boundaries of the Windows fixtures. No additional actionable issue was found in that scope.
+
+The actual Windows 11 tray app, Edge connection, login startup, system shutdown, Windows file-lock recovery and playback with the brother’s usual account still require the nearby PC. A successful playback smoke test and a controlled network block do not establish removal of all pre-roll or mid-roll video ads. Use `TESTING.md` for that acceptance pass.
 
 API behavior was checked against primary documentation: [opening an existing registry key](https://learn.microsoft.com/en-us/dotnet/api/microsoft.win32.registrykey.createsubkey?view=net-10.0), [WinForms close reasons](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.closereason?view=windowsdesktop-10.0), and [Chrome permission queries and events](https://developer.chrome.com/docs/extensions/reference/api/permissions).
