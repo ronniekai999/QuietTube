@@ -109,7 +109,7 @@ try {
     } finally { $lock.ReleaseMutex(); $lock.Dispose() }
     $passed.Add('Concurrent setup/uninstall processes cannot acquire the same installation lock')
 } catch { $failed.Add('Install lock: ' + $_.Exception.Message) }
-@{testedAtUtc=[DateTime]::UtcNow.ToString('o');version='0.1.1';platform='macOS PowerShell 7';results=@($passed.ToArray());errors=@($failed.ToArray());
+@{testedAtUtc=[DateTime]::UtcNow.ToString('o');version='0.1.2';platform=([Environment]::OSVersion.ToString() + '; PowerShell ' + $PSVersionTable.PSVersion.ToString());results=@($passed.ToArray());errors=@($failed.ToArray());
     method='Production setup/uninstall executed in small isolated filesystem fixtures; Windows registry, shell and process boundaries mocked.';
-    limitation='Windows PowerShell 5.1, real registry/COM shortcut writes, tray shutdown and Windows file locks still need the Windows PC.'} | ConvertTo-Json -Depth 5
+    limitation='Real registry/COM shortcut writes, tray shutdown and Windows file locks need Windows integration or physical-PC checks.'} | ConvertTo-Json -Depth 5
 if ($failed.Count) { exit 1 }

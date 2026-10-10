@@ -83,13 +83,19 @@ function Assert-QuietTubePackage {
     $root = [IO.Path]::GetFullPath($SourceRoot)
     $manifestPath = Join-Path $root 'checksums.json'
     if (!(Test-Path -LiteralPath $manifestPath)) { throw 'checksums.json is missing. Extract the complete ZIP.' }
-    $entries = @(Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json)
+    # Windows PowerShell 5.1 emits a JSON array as one pipeline object. Assign
+    # it first, then normalize the value, so each entry has a scalar file path.
+    $parsedEntries = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    $entries = @($parsedEntries)
+    foreach ($entry in $entries) {
+        if ($entry -isnot [PSCustomObject] -or $entry.path -isnot [string] -or [string]::IsNullOrWhiteSpace($entry.path)) { throw 'Invalid package file path.' }
+        if ($entry.sha256 -isnot [string] -or $entry.sha256 -notmatch '^[a-f0-9]{64}$') { throw 'Invalid checksum format.' }
+    }
     $required = @('bin/QuietTube.exe', 'bin/QuietTube.Host.exe', 'extension/manifest.json', 'extension-id.txt', 'scripts/Setup.ps1', 'scripts/Install-Helpers.ps1')
     foreach ($name in $required) {
         if (!($entries | Where-Object { $_.path -eq $name })) { throw ('Package manifest omits required file: ' + $name) }
     }
     foreach ($entry in $entries) {
-        if ($entry.sha256 -notmatch '^[a-f0-9]{64}$') { throw 'Invalid checksum format.' }
         $file = [IO.Path]::GetFullPath((Join-Path $root $entry.path))
         if (!$file.StartsWith($root + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) { throw 'Invalid package path.' }
         if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw ('Missing package file: ' + $entry.path) }

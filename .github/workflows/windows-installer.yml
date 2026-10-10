@@ -1,0 +1,39 @@
+name: Windows installer
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  powershell-51:
+    runs-on: windows-2022
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Test the Windows PowerShell version used by Setup.cmd
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1) { throw 'Expected Windows PowerShell 5.1.' }
+          $project = (Get-Location).Path
+          $work = Join-Path $env:RUNNER_TEMP 'quiettube-installer-tests'
+          New-Item -ItemType Directory -Path $work -Force | Out-Null
+          & powershell.exe -NoProfile -NonInteractive -File tests/installer-checks.ps1 -WorkDirectory $work -ProjectDirectory $project > (Join-Path $work 'installer-test-results.json')
+          if ($LASTEXITCODE -ne 0) { Get-Content (Join-Path $work 'installer-test-results.json'); throw 'Installer helper checks failed.' }
+          Get-Content (Join-Path $work 'installer-test-results.json')
+          & powershell.exe -NoProfile -NonInteractive -File tests/installer-regressions.ps1 -WorkDirectory $work -ProjectDirectory $project > (Join-Path $work 'installer-regression-results.json')
+          if ($LASTEXITCODE -ne 0) { Get-Content (Join-Path $work 'installer-regression-results.json'); throw 'Installer lifecycle checks failed.' }
+          Get-Content (Join-Path $work 'installer-regression-results.json')
+          & powershell.exe -NoProfile -NonInteractive -File tests/windows-installer.ps1 -WorkDirectory $work -ProjectDirectory $project -ResultsPath (Join-Path $work 'windows-integration-results.json') > (Join-Path $work 'windows-integration-results.log')
+          Get-Content (Join-Path $work 'windows-integration-results.log')
+          if ($LASTEXITCODE -ne 0) { throw 'Real Windows installer checks failed.' }
+      - name: Save Windows installer results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: windows-powershell-51-results
+          path: ${{ runner.temp }}/quiettube-installer-tests

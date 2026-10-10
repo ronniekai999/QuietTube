@@ -35,7 +35,7 @@ for file in sorted(project.rglob('*')):
         continue
     entries.append({'path': file.relative_to(project).as_posix(), 'sha256': hashlib.sha256(file.read_bytes()).hexdigest()})
 (project / 'checksums.json').write_text(json.dumps(entries, indent=2) + '\n')
-package = project.parent / 'QuietTube-Windows-x64-0.1.1.zip'
+package = project.parent / 'QuietTube-Windows-x64-0.1.2.zip'
 with zipfile.ZipFile(package, 'w', zipfile.ZIP_DEFLATED, compresslevel=6) as zip_file:
     for file in sorted(project.rglob('*')):
         if file.is_file() and '.git' not in file.relative_to(project).parts:

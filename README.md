@@ -4,14 +4,14 @@
 
 **Keep the video. Quiet the interruptions.**
 
-**[Download the Windows installer](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.1/QuietTube-Windows-x64-0.1.1.zip)** · [SHA-256 checksum](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.1/QuietTube-Windows-x64-0.1.1.zip.sha256)
+**[Download the Windows installer](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.2/QuietTube-Windows-x64-0.1.2.zip)** · [SHA-256 checksum](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.2/QuietTube-Windows-x64-0.1.2.zip.sha256)
 
 <br>
 
 <img src="https://img.shields.io/badge/Windows-11_x64-B8ED9C?labelColor=202923" alt="Windows 11 x64 target">
 <img src="https://img.shields.io/badge/Browsers-Edge_%2B_Chrome-4D7040?labelColor=202923" alt="Edge and Chrome">
 <img src="https://img.shields.io/badge/Extension-Manifest_V3-536A5A?labelColor=202923" alt="Manifest V3 extension">
-<img src="https://img.shields.io/badge/Version-0.1.1-B8ED9C?labelColor=202923" alt="Version 0.1.1">
+<img src="https://img.shields.io/badge/Version-0.1.2-B8ED9C?labelColor=202923" alt="Version 0.1.2">
 <img src="https://img.shields.io/badge/License-GPL--3.0--or--later-536A5A?labelColor=202923" alt="GPL 3.0 or later">
 
 <br>
@@ -26,7 +26,7 @@ QuietTube pairs a native Windows tray app with a YouTube-focused browser extensi
 
 The extension builds on **[uBlock Origin Lite](https://github.com/uBlockOrigin/uBOL-home)**, by Raymond Hill and contributors, with packaged network filters and YouTube player scriptlets. QuietTube adds shared Windows controls, connection status, and a focused popup. Filtering runs inside the browser; the Windows app manages settings and reports what each browser has confirmed.
 
-> **Preview · v0.1.1:** Windows x64 builds and 62 checks have passed on the Mac, including real Chromium/native-host integration. Execution on Windows 11, Edge playback with the intended account, and pre-roll/mid-roll ad checks are still pending. This is an unsigned test build. See [validation](#validation) for the evidence and remaining device checks.
+> **Preview · v0.1.2:** Windows x64 builds and 62 checks have passed on the Mac, including real Chromium/native-host integration. Execution on Windows 11, Edge playback with the intended account, and pre-roll/mid-roll ad checks are still pending. This is an unsigned test build. See [validation](#validation) for the evidence and remaining device checks.
 
 <a id="features"></a>
 ## ✨ What you get
@@ -57,11 +57,11 @@ The extension builds on **[uBlock Origin Lite](https://github.com/uBlockOrigin/u
 | --- | --- |
 | Operating system | **Windows 11 on an Intel/AMD x64 PC** |
 | Browser | **Microsoft Edge** is the primary target; Chrome uses the same extension |
-| Package | [QuietTube-Windows-x64-0.1.1.zip](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.1/QuietTube-Windows-x64-0.1.1.zip), fully extracted |
+| Package | [QuietTube-Windows-x64-0.1.2.zip](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.2/QuietTube-Windows-x64-0.1.2.zip), fully extracted |
 | App runtime | Included in the package; no separate .NET installation required |
 | Installation | Per Windows account, without administrator access |
 
-Download **QuietTube-Windows-x64-0.1.1.zip** from the [Windows preview release](https://github.com/ronniekai999/QuietTube/releases/tag/v0.1.1). GitHub's **Code → Download ZIP** and automatic **Source code (zip)** downloads contain developer source and cannot be used as the installer. The Windows package includes the built executables, generated extension, and `checksums.json` required by setup. Developers can also [build it on a Mac](#development).
+Download **QuietTube-Windows-x64-0.1.2.zip** from the [Windows preview release](https://github.com/ronniekai999/QuietTube/releases/tag/v0.1.2). GitHub's **Code → Download ZIP** and automatic **Source code (zip)** downloads contain developer source and cannot be used as the installer. The Windows package includes the built executables, generated extension, and `checksums.json` required by setup. Developers can also [build it on a Mac](#development).
 
 ### 2. Install the companion
 
@@ -97,7 +97,7 @@ With the tray app running, the popup should show **Windows app connected** and *
 From PowerShell in the folder containing the package:
 
 ```powershell
-Get-FileHash .\QuietTube-Windows-x64-0.1.1.zip -Algorithm SHA256
+Get-FileHash .\QuietTube-Windows-x64-0.1.2.zip -Algorithm SHA256
 ```
 
 Compare the result with the accompanying `.zip.sha256` file. Setup also verifies the package's file manifest. Checksums detect changed files; they are not a publisher signature. The private test executables are unsigned, so Windows may ask for confirmation when they run.
@@ -188,7 +188,7 @@ This removes the owned app files, saved settings, native messaging registrations
 
 | Symptom | What to check |
 | --- | --- |
-| **“checksums.json is missing”** | Download [QuietTube-Windows-x64-0.1.1.zip](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.1/QuietTube-Windows-x64-0.1.1.zip) and extract it completely. GitHub's source ZIP does not contain the installer payload; repeatedly extracting that source ZIP will produce the same error. |
+| **“checksums.json is missing”** | Download [QuietTube-Windows-x64-0.1.2.zip](https://github.com/ronniekai999/QuietTube/releases/download/v0.1.2/QuietTube-Windows-x64-0.1.2.zip) and extract it completely. GitHub's source ZIP does not contain the installer payload; repeatedly extracting that source ZIP will produce the same error. |
 | **Load unpacked cannot find the extension** | Run setup from a fully extracted Windows package first. Select `%LOCALAPPDATA%\QuietTube\extension`; a source ZIP does not contain the generated extension. |
 | **Browser protection only** | Run **Setup.cmd** for the same Windows account. Reload the extension and choose **Reconnect**. If the app is closed, open QuietTube from Start. |
 | **Needs attention after changing site access** | Restore QuietTube's YouTube site access in the browser's Extensions page. Reload the extension if the popup requests it. |
@@ -203,7 +203,7 @@ For a report, include the Windows/browser versions, visible error, steps to repr
 <a id="validation"></a>
 ## 🧪 What has been verified
 
-Version 0.1.1 includes **62 passing checks** across five suites. The receipts are committed alongside the source:
+Version 0.1.2 includes **62 passing checks** across five suites. The receipts are committed alongside the source:
 
 | Suite | Passing | Evidence and scope |
 | --- | ---: | --- |

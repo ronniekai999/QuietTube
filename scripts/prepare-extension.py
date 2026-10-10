@@ -35,11 +35,11 @@ metadata = {
     'name': 'uBlock Origin Lite', 'version': manifest['version'],
     'source': 'https://github.com/gorhill/uBlock',
     'commit': subprocess.check_output(['git', '-C', str(upstream), 'rev-parse', 'HEAD'], text=True).strip(),
-    'builtAtUtc': '2026-10-09', 'quiettubeVersion': '0.1.1'
+    'builtAtUtc': '2026-10-09', 'quiettubeVersion': '0.1.2'
 }
 (project / 'engine-metadata.json').write_text(json.dumps(metadata, indent=2) + '\n')
-manifest.update(name='QuietTube', short_name='QuietTube', version='0.1.1',
-    version_name='0.1.1 · uBO Lite ' + metadata['version'],
+manifest.update(name='QuietTube', short_name='QuietTube', version='0.1.2',
+    version_name='0.1.2 · uBO Lite ' + metadata['version'],
     description='YouTube filtering with a Windows tray companion. Independent modification of uBlock Origin Lite.',
     author='QuietTube contributors; filtering engine by Raymond Hill and contributors', key=public_key,
     options_page='quiettube/help.html', homepage_url='https://github.com/uBlockOrigin/uBOL-home',
@@ -84,7 +84,7 @@ replace_once(destination / 'js/ext.js',
 background.write_text(background.read_text() + "\n// QuietTube integration, GPL-3.0-or-later.\nimport { initializeCompanion } from './quiettube/bridge.js';\ninitializeCompanion(isFullyInitialized);\n")
 # Preserve engine source copyright; clearly identify this as a modified distribution.
 (destination / 'QUIETTUBE-NOTICE.txt').write_text(
-    'QuietTube 0.1.1 is an independent modification of uBlock Origin Lite.\n'
+    'QuietTube 0.1.2 is an independent modification of uBlock Origin Lite.\n'
     'Upstream authors: Raymond Hill and contributors. License: GPL-3.0-or-later.\n'
     f"Pinned source: {metadata['source']}/tree/{metadata['commit']}\n"
     'Changes: YouTube-only defaults, custom popup, native companion messaging, and branding.\n'

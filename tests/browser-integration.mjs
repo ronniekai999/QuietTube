@@ -19,7 +19,7 @@ const results = [];
 const errors = [];
 const contexts = [];
 await fs.mkdir(data, { recursive: true });
-await fs.cp(path.join(project, 'extension'), extension, { recursive: true });
+await fs.cp(process.env.QUIETTUBE_TEST_EXTENSION || path.join(project, 'extension'), extension, { recursive: true });
 
 async function start(name, native = true) {
     const profile = path.join(root, name);

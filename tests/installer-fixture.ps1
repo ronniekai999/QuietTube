@@ -51,7 +51,8 @@ if ($config.owned -or $config.unknown -or $config.wrongMarker -or $config.linked
     if ($config.linked) {
         [IO.Directory]::CreateDirectory((Join-Path $FixtureRoot 'outside')) | Out-Null
         [IO.File]::WriteAllText((Join-Path $FixtureRoot 'outside/keep.txt'), 'preserve')
-        New-Item -ItemType SymbolicLink -Path (Join-Path $root 'data/link') -Target (Join-Path $FixtureRoot 'outside') | Out-Null
+        $linkType = if ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT) { 'Junction' } else { 'SymbolicLink' }
+        New-Item -ItemType $linkType -Path (Join-Path $root 'data/link') -Target (Join-Path $FixtureRoot 'outside') | Out-Null
     }
     if ($config.startup -eq 'on') { $global:FixtureRegistry[$run]['QuietTube']='"' + (Join-Path $root 'bin/QuietTube.exe') + '" --background' }
     foreach ($key in $hostKeys) { $global:FixtureRegistry[$key]=@{default=(Join-Path $root 'native-host.json')} }

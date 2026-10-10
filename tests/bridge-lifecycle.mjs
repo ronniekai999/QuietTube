@@ -50,7 +50,7 @@ function harness() {
         declarativeNetRequest: { async getEnabledRulesets() { return ['default']; } },
         alarms: { async create(name, info) { alarms.set(name, info); }, async clear(name) { alarms.delete(name); }, onAlarm },
         runtime: {
-            getManifest: () => ({ version: '0.1.1' }), getURL: p => 'chrome-extension://test/' + p,
+            getManifest: () => ({ version: '0.1.2' }), getURL: p => 'chrome-extension://test/' + p,
             onMessage: event(),
             connectNative() {
                 if (!available) throw new Error('Native host unavailable');
@@ -173,7 +173,7 @@ await check('A disconnect during a popup command preserves its intent offline', 
     const task = h.api.setProtection(false); await tick(); port.onDisconnect.emit();
     const s = await task; assert.equal(s.connected, false); assert.equal(s.effectiveEnabled, false); assert.equal(h.saved.quiettubePending.enabled, false);
 });
-const report = { testedAtUtc: new Date().toISOString(), version: '0.1.1', results, errors,
+const report = { testedAtUtc: new Date().toISOString(), version: '0.1.2', results, errors,
     method: 'Production bridge with mocked Chrome/native boundaries and controllable clock; complements real-browser tests.' };
 await fs.writeFile(path.join(project, 'bridge-test-results.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify(report, null, 2));

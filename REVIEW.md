@@ -1,4 +1,4 @@
-# QuietTube 0.1.1 review
+# QuietTube 0.1.2 review
 
 All six findings from the first review are fixed. The follow-up review found no remaining actionable issues in the reviewed code after the additional fixes below. This is a source and package review with Mac validation; Windows runtime acceptance is still pending.
 
