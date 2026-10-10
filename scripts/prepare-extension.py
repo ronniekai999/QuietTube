@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Build QuietTube's small, audited overlay on a pinned upstream uBO Lite build."""
 import base64
+import argparse
+from datetime import datetime, timezone
 import hashlib
 import json
 import shutil
@@ -9,12 +11,19 @@ import sys
 import tempfile
 from pathlib import Path
 
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('upstream', type=Path)
+parser.add_argument('--browser', choices=['edge', 'safari'], default='edge')
+parser.add_argument('--destination', type=Path)
+parser.add_argument('--app-platform', choices=['Windows', 'Mac'], default='Windows')
+parser.add_argument('--app-version', default='0.1.2')
+options = parser.parse_args()
 project = Path(__file__).resolve().parent.parent
-upstream = Path(sys.argv[1]).resolve()
-engine = upstream / 'dist/build/uBOLite.edge'
+upstream = options.upstream.resolve()
+engine = upstream / f'dist/build/uBOLite.{options.browser}'
 if not (engine / 'manifest.json').is_file():
-    raise SystemExit('Build the pinned upstream edge extension first.')
-destination = project / 'extension'
+    raise SystemExit(f'Build the pinned upstream {options.browser} extension first.')
+destination = options.destination.resolve() if options.destination else project / 'extension'
 if destination.exists():
     shutil.rmtree(destination)
 shutil.copytree(engine, destination)
@@ -35,17 +44,24 @@ metadata = {
     'name': 'uBlock Origin Lite', 'version': manifest['version'],
     'source': 'https://github.com/gorhill/uBlock',
     'commit': subprocess.check_output(['git', '-C', str(upstream), 'rev-parse', 'HEAD'], text=True).strip(),
-    'builtAtUtc': '2026-10-09', 'quiettubeVersion': '0.1.2'
+    'builtAtUtc': datetime.now(timezone.utc).isoformat(), 'quiettubeVersion': options.app_version
 }
-(project / 'engine-metadata.json').write_text(json.dumps(metadata, indent=2) + '\n')
-manifest.update(name='QuietTube', short_name='QuietTube', version='0.1.2',
-    version_name='0.1.2 · uBO Lite ' + metadata['version'],
-    description='YouTube filtering with a Windows tray companion. Independent modification of uBlock Origin Lite.',
+(destination / 'engine-metadata.json').write_text(json.dumps(metadata, indent=2) + '\n')
+if options.destination is None:
+    (project / 'engine-metadata.json').write_text(json.dumps(metadata, indent=2) + '\n')
+manifest.update(name='QuietTube', short_name='QuietTube', version=options.app_version,
+    version_name=options.app_version + ' · uBO Lite ' + metadata['version'],
+    description=f'YouTube filtering with a {options.app_platform} companion. Independent modification of uBlock Origin Lite.',
     author='QuietTube contributors; filtering engine by Raymond Hill and contributors', key=public_key,
     options_page='quiettube/help.html', homepage_url='https://github.com/uBlockOrigin/uBOL-home',
     host_permissions=['https://*.youtube.com/*'])
 manifest['permissions'] = [p for p in manifest['permissions'] if p not in ['userScripts', 'activeTab']]
 manifest['permissions'].append('nativeMessaging')
+if options.browser == 'safari':
+    manifest.pop('key', None)
+    manifest.pop('version_name', None)
+    # Safari displays its containing app's version and uses its bundle identity.
+    # Chrome's public extension key remains unchanged in the Chrome build.
 manifest['action']['default_popup'] = 'quiettube/popup.html'
 manifest['action']['default_title'] = 'QuietTube'
 manifest['commands'] = {}
@@ -58,6 +74,7 @@ for name in ['popup.html', 'popup.css', 'popup.js', 'help.html']:
 bridge_dir = destination / 'js/quiettube'
 bridge_dir.mkdir()
 shutil.copy2(overlay / 'bridge.js', bridge_dir / 'bridge.js')
+shutil.copy2(overlay / 'platform.js', bridge_dir / 'platform.js')
 (bridge_dir / 'engine.js').write_text('export const ENGINE = ' + json.dumps(metadata) + ';\n')
 
 def replace_once(file, before, after):
@@ -84,12 +101,17 @@ replace_once(destination / 'js/ext.js',
 background.write_text(background.read_text() + "\n// QuietTube integration, GPL-3.0-or-later.\nimport { initializeCompanion } from './quiettube/bridge.js';\ninitializeCompanion(isFullyInitialized);\n")
 # Preserve engine source copyright; clearly identify this as a modified distribution.
 (destination / 'QUIETTUBE-NOTICE.txt').write_text(
-    'QuietTube 0.1.2 is an independent modification of uBlock Origin Lite.\n'
+    f'QuietTube {options.app_version} is an independent modification of uBlock Origin Lite.\n'
     'Upstream authors: Raymond Hill and contributors. License: GPL-3.0-or-later.\n'
     f"Pinned source: {metadata['source']}/tree/{metadata['commit']}\n"
     'Changes: YouTube-only defaults, custom popup, native companion messaging, and branding.\n'
     'Matching source, overlay, filter inputs, and license are provided with this package.\n')
-shutil.copy2(upstream / 'LICENSE.txt', project / 'LICENSE.txt')
-shutil.copy2(ui / 'help.html', project / 'START-HERE.html')
-shutil.copy2(ui / 'popup.css', project / 'popup.css')
+if options.app_platform == 'Mac':
+    shutil.copy2(project / 'mac/extension/help.html', ui / 'help.html')
+    popup = ui / 'popup.html'
+    popup.write_text(popup.read_text().replace('Checking Windows app', 'Checking Mac app'))
+if options.destination is None:
+    shutil.copy2(upstream / 'LICENSE.txt', project / 'LICENSE.txt')
+    shutil.copy2(ui / 'help.html', project / 'START-HERE.html')
+    shutil.copy2(ui / 'popup.css', project / 'popup.css')
 print(json.dumps({'extensionId': extension_id, 'engine': metadata, 'path': str(destination)}, indent=2))

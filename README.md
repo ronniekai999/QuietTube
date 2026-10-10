@@ -28,6 +28,12 @@ The extension builds on **[uBlock Origin Lite](https://github.com/uBlockOrigin/u
 
 > **Preview · v0.1.2:** Windows x64 builds and 64 Mac checks have passed, including real Chromium/native-host integration. Another 37 installer checks pass on Windows with PowerShell 5.1, including real registry and shortcut operations. The Windows 11 tray, Edge playback with the intended account, and pre-roll/mid-roll ad checks still need the physical PC. This is an unsigned test build. See [validation](#validation) for the evidence and remaining device checks.
 
+### QuietTube for Mac · 0.2.0 preview
+
+A native **menu bar app for Safari and Chrome** is now available in the [Mac source and setup guide](mac/README.md). It shares protection controls across both browsers, supports a timed pause, and uses the same YouTube filtering engine. The first preview targets **Apple Silicon**, **macOS 14+**, and **Safari 18.6+**.
+
+The Mac preview is built and development-signed locally. It has its own version and verification receipts, and is awaiting real Safari playback acceptance. A public Mac installer will require Developer ID signing and notarization. The Windows download above remains the released Windows package.
+
 <a id="features"></a>
 ## ✨ What you get
 

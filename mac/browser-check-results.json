@@ -1,0 +1,22 @@
+{
+  "testedAtUtc": "2026-10-10T04:59:33.263Z",
+  "platform": "macOS arm64",
+  "browser": "isolated Playwright Chromium",
+  "results": [
+    "Real browser → native host handshake and filtering-engine readiness",
+    "Popup off command synchronizes to another real browser profile",
+    "External controller change pushes back into both browser profiles",
+    "Timed pause and resume synchronize through native messaging",
+    "Real native pause expiry automatically restores filtering in both profiles (short isolated deadline)",
+    "Actual network request to known ad endpoint is blocked in a YouTube page",
+    "Same network request is allowed outside YouTube",
+    "Off control removes the real network block",
+    "Revoking YouTube access updates the real popup, badge and native acknowledgment to needs attention",
+    "Restoring YouTube access restores real filtering readiness and popup status",
+    "Saved off setting survives a full browser restart",
+    "Native host rejects commands before a valid handshake",
+    "Native diagnostics contain filtering acknowledgments without page URLs or cookies"
+  ],
+  "errors": [],
+  "limitation": "Isolated Chromium with the native Swift Mac host. Safari, menu bar UI, and actual YouTube pre-roll/mid-roll playback require separate acceptance checks."
+}

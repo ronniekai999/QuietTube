@@ -1,0 +1,15 @@
+{
+  "testedAtUtc": "2026-10-10T05:05:17.819Z",
+  "results": [
+    "Safari sends each command with browser and client metadata through request/reply messaging",
+    "Native app notifications refresh shared settings without forwarding untrusted notification data",
+    "Polling discovers a missed app change and suppresses repeated identical settings",
+    "Status acknowledgments do not trigger a state/report feedback loop",
+    "An unchanged Safari setting still requests a fresh filtering acknowledgment every twenty seconds",
+    "Transport errors invalidate the Safari connection and stop its polling timer",
+    "A late native reply after disconnect cannot overwrite a newer connection",
+    "Chrome keeps the original native messaging transport and browser identity"
+  ],
+  "errors": [],
+  "scope": "Production Safari transport with controlled browser boundary; real Safari integration is separate."
+}

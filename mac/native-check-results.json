@@ -1,0 +1,29 @@
+{
+  "appVersion" : "0.2.0",
+  "errors" : [
+
+  ],
+  "platform" : "macOS",
+  "results" : [
+    "Default settings contain an explicit null pause and persist with the expected schema",
+    "Explicit off survives a new store instance and advances the revision",
+    "Timed pause expires without changing explicit off behavior",
+    "Corrupt or incomplete settings are preserved and never silently reset",
+    "Settings and lock symlinks cannot escape the private data directory",
+    "A dangling settings symlink is rejected rather than treated as first launch",
+    "Native commands require a valid handshake and reject malformed scalar types",
+    "Safari request metadata shares the same settings as a Chrome native session",
+    "Browser readiness needs fresh matching acknowledgments for both rules and scripts",
+    "Native framing round trips Unicode and rejects truncated or excessive payloads",
+    "Chrome registration contains only the exact extension origin and current helper",
+    "Chrome registration preserves unrelated hosts and refuses foreign ownership",
+    "Chrome updates replace only an owned registration and removal checks the current installation",
+    "Chrome registration symlinks preserve their outside target",
+    "Independent native processes serialize concurrent settings updates without lost revisions",
+    "Native host refuses an unregistered Chrome extension origin",
+    "A private fresh app heartbeat is removed only by its owning process",
+    "App promotion is atomic and refuses a destination that appeared during installation"
+  ],
+  "scope" : "Real private files, native processes, locking, framing, shared Safari protocol, and Chrome registration. Browser acceptance is separate.",
+  "testedAtUtc" : "2026-10-10T05:05:21.035Z"
+}

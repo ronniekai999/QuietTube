@@ -1,3 +1,4 @@
+import { PLATFORM } from '../js/quiettube/platform.js';
 let current;
 let busy = false;
 const $ = id => document.getElementById(id);
@@ -16,8 +17,8 @@ function render(s) {
     $('headline').textContent = attention ? 'Filtering needs attention' : s.filteringReady ? 'Protection is on' : paused ? 'Taking a short break' : 'Protection is off';
     $('detail').textContent = attention || (s.filteringReady ? 'The filtering engine is active on YouTube. Reload any video that was already open.' : paused ? `Resumes at ${new Date(s.pausedUntilUtc).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}.` : 'YouTube loads without QuietTube filtering.');
     $('toggle').textContent = s.effectiveEnabled ? 'Turn protection off' : 'Turn protection on';
-    $('connection').textContent = s.connected ? s.appRunning ? 'Windows app connected' : 'Windows companion connected' : 'Browser protection only';
-    $('connectionDetail').textContent = s.connected ? s.appRunning ? 'Tray controls and this browser are synchronized.' : 'Filtering continues. Open QuietTube from the Start menu for tray controls.' : 'Run Windows setup to connect the tray app. Browser controls still work here.';
+    $('connection').textContent = s.connected ? s.appRunning ? `${PLATFORM.appName} connected` : `${PLATFORM.companionName} connected` : 'Browser protection only';
+    $('connectionDetail').textContent = s.connected ? s.appRunning ? `${PLATFORM.mac ? 'Menu bar' : 'Tray'} controls and this browser are synchronized.` : PLATFORM.mac ? 'Filtering continues. Open QuietTube for menu bar controls.' : 'Filtering continues. Open QuietTube from the Start menu for tray controls.' : PLATFORM.mac ? 'Open QuietTube to connect the Mac app. Browser controls still work here.' : 'Run Windows setup to connect the tray app. Browser controls still work here.';
     $('dot').classList.toggle('online', s.connected);
     $('version').textContent = `v${s.extensionVersion}`;
     controls.forEach(id => { $(id).disabled = false; });

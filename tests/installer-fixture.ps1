@@ -24,6 +24,8 @@ foreach ($file in @('bin/QuietTube.exe','bin/QuietTube.Host.exe','extension/mani
 [IO.File]::WriteAllText((Join-Path $package 'extension-id.txt'), $id)
 New-Item -ItemType Directory -Path (Join-Path $package '.github/workflows') -Force | Out-Null
 [IO.File]::WriteAllText((Join-Path $package '.github/workflows/fixture.yml'), 'fixture workflow')
+New-Item -ItemType Directory -Path (Join-Path $package 'mac') -Force | Out-Null
+[IO.File]::WriteAllText((Join-Path $package 'mac/fixture.swift'), '// matching source fixture')
 $entries = @(Get-ChildItem -LiteralPath $package -File -Recurse | ForEach-Object {
     @{path=$_.FullName.Substring($package.Length+1).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}
 })
@@ -72,6 +74,7 @@ catch { $failure = $_.Exception.Message; $exitCode = 1 }
 $after = $global:FixtureRegistry | ConvertTo-Json -Depth 5 -Compress
 $result = @{failure=$failure;exitCode=$exitCode;registryBefore=$before;registryAfter=$after;registry=$global:FixtureRegistry;
     workflowExists=[IO.File]::Exists((Join-Path $root '.github/workflows/fixture.yml'));
+    macSourceExists=[IO.File]::Exists((Join-Path $root 'mac/fixture.swift'));
     rootExists=[IO.Directory]::Exists($root);markerExists=[IO.File]::Exists((Join-Path $root 'quiettube-install.json'));
     payload=$(if ([IO.File]::Exists((Join-Path $root 'bin/QuietTube.exe'))) {[IO.File]::ReadAllText((Join-Path $root 'bin/QuietTube.exe'))} else {$null});
     savedData=$(if ([IO.File]::Exists((Join-Path $root 'data/settings.json'))) {[IO.File]::ReadAllText((Join-Path $root 'data/settings.json'))} else {$null});

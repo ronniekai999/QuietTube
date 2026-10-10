@@ -36,6 +36,8 @@ Copy-Item (Join-Path $package 'bin/QuietTube.exe') (Join-Path $package 'bin/Quie
 [IO.File]::WriteAllText((Join-Path $package 'START-HERE.html'), '<html><body>Installer fixture</body></html>')
 New-Item -ItemType Directory -Path (Join-Path $package '.github/workflows') -Force | Out-Null
 [IO.File]::WriteAllText((Join-Path $package '.github/workflows/fixture.yml'), 'fixture workflow')
+New-Item -ItemType Directory -Path (Join-Path $package 'mac') -Force | Out-Null
+[IO.File]::WriteAllText((Join-Path $package 'mac/fixture.swift'), '// matching source fixture')
 $entries = @(Get-ChildItem $package -File -Recurse | ForEach-Object {
     @{path=$_.FullName.Substring($package.Length + 1).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}
 })

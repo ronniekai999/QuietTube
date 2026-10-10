@@ -6,7 +6,7 @@ const project = path.resolve(path.dirname(new URL(import.meta.url).pathname), '.
 const source = (await fs.readFile(path.join(project, 'extension-overlay/bridge.js'), 'utf8'))
     .replace(/^import .*;\n/gm, '').replace('export function initializeCompanion', 'function initializeCompanion');
 const create = new Function('chrome', 'navigator', 'crypto', 'getFilteringMode', 'setFilteringModeDetails',
-    'registerContentScripts', 'registerUserScripts', 'ENGINE', 'Date', source + '\nreturn { initializeCompanion, snapshot, setProtection, connect };');
+    'registerContentScripts', 'registerUserScripts', 'ENGINE', 'Date', 'PLATFORM', source + '\nreturn { initializeCompanion, snapshot, setProtection, connect };');
 function event() {
     const listeners = [];
     return { addListener: fn => listeners.push(fn), emit: value => listeners.forEach(fn => fn(value)) };
@@ -62,7 +62,8 @@ function harness() {
     };
     class Clock extends Date { static now() { return now; } }
     const api = create(chrome, { userAgent: 'Edg/156' }, crypto,
-        async () => mode, async value => { mode = value.optimal.length ? 2 : 0; }, async () => {}, async () => {}, { version: 'test' }, Clock);
+        async () => mode, async value => { mode = value.optimal.length ? 2 : 0; }, async () => {}, async () => {}, { version: 'test' }, Clock,
+        { browser: 'Edge', companionName: 'Windows companion', connectNative: host => chrome.runtime.connectNative(host) });
     api.initializeCompanion(Promise.resolve());
     return { api, saved, ports, alarms, onAlarm, chrome, action,
         setAvailable(value) { available = value; }, gateRead(value) { readGate = value; }, gateWrite(value) { writeGate = value; },

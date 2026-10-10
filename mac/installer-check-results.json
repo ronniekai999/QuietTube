@@ -1,0 +1,15 @@
+{
+  "testedAtUtc": "2026-10-10T05:04:16.797876+00:00",
+  "results": [
+    "First install copies and verifies the signed app without administrator access",
+    "Signed update preserves unrelated files and removes only its own staging directory",
+    "An unrecognized existing app is refused and preserved",
+    "A symbolic-link app destination preserves its outside target",
+    "A symbolic-link Applications folder is rejected before copying",
+    "A changed source payload fails signature validation before installation",
+    "A launch failure retains the completed installation and explains how to open it",
+    "An update destination appearing during promotion is preserved with the old app recovery path"
+  ],
+  "errors": [],
+  "scope": "Production installer, real signed app copies, codesign verification and exclusive moves in disposable Mac folders. App launch is stubbed; normal UI and browser activation are separate."
+}

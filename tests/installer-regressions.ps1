@@ -24,7 +24,7 @@ function Case([string]$Name,[hashtable]$Config,[scriptblock]$Assertions) {
     } catch { $failed.Add($Name + ': ' + $_.Exception.Message) }
 }
 Case 'First install preserves unrelated startup entries and writes an ownership marker' @{} {
-    param($r); Expect (!$r.failure -and $r.payload -eq 'new-payload' -and $r.markerExists -and $r.workflowExists) 'Installation failed or packaged source was omitted.'
+    param($r); Expect (!$r.failure -and $r.payload -eq 'new-payload' -and $r.markerExists -and $r.workflowExists -and $r.macSourceExists) 'Installation failed or packaged source was omitted.'
     Expect ($r.registry.$run.OtherApp -eq 'C:\OtherApp\app.exe') 'Other startup was changed.'
     Expect ($r.registry.$run.QuietTube -like '*--background') 'First install startup missing.'
 }

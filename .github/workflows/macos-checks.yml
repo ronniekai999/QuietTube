@@ -1,0 +1,35 @@
+name: Mac native checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    runs-on: macos-14
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Native files, protocol, registration and installation moves
+        run: bash scripts/test-macos-native.sh
+      - name: Safari request and notification transport
+        run: node tests/safari-transport.mjs
+      - name: Shared browser lifecycle
+        run: node tests/bridge-lifecycle.mjs
+      - name: Upload verification receipts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: mac-native-checks
+          path: |
+            mac/native-check-results.json
+            mac/safari-transport-results.json
+            bridge-test-results.json

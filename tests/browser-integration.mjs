@@ -11,7 +11,7 @@ const require = createRequire(path.join(workspace, 'work/browser-tests/package.j
 const { chromium } = require('playwright');
 const exec = promisify(execFile);
 const extensionId = (await fs.readFile(path.join(project, 'extension-id.txt'), 'utf8')).trim();
-const nativeHost = path.join(workspace, 'work/publish/host-mac/QuietTube.Host');
+const nativeHost = path.resolve(process.env.QUIETTUBE_TEST_HOST || path.join(workspace, 'work/publish/host-mac/QuietTube.Host'));
 const root = path.join(workspace, 'work/tests/browser-' + Date.now());
 const extension = path.join(root, 'extension');
 const data = path.join(root, 'data');
@@ -27,7 +27,8 @@ async function start(name, native = true) {
     if (native) {
         await fs.writeFile(path.join(profile, 'NativeMessagingHosts/com.quiettube.companion.json'), JSON.stringify({
             name: 'com.quiettube.companion', description: 'QuietTube isolated integration test', path: nativeHost,
-            type: 'stdio', allowed_origins: [`chrome-extension://${extensionId}/`]
+            type: 'stdio', allowed_origins: [`chrome-extension://${extensionId}/`],
+            ...(process.env.QUIETTUBE_TEST_HOST ? { quiettubeOwner: 'com.quiettube.mac' } : {})
         }));
     }
     const context = await chromium.launchPersistentContext(profile, {
@@ -52,14 +53,16 @@ async function command(page, enabled, pauseMinutes = 0) {
     assert.equal(result.error, undefined, result.error);
     return result;
 }
-async function until(task, predicate, label, timeout = 15000) {
+async function until(task, predicate, label, timeout = Number(process.env.QUIETTUBE_TEST_TIMEOUT || 15000)) {
     const limit = Date.now() + timeout;
+    let last;
     while (Date.now() < limit) {
         const result = await task();
+        last = result;
         if (predicate(result)) return result;
         await new Promise(resolve => setTimeout(resolve, 150));
     }
-    throw new Error('Timed out: ' + label);
+    throw new Error('Timed out: ' + label + (last?.connectionError ? ' — ' + last.connectionError : ''));
 }
 
 try {
@@ -152,7 +155,7 @@ try {
     await details.close();
     results.push('Restoring YouTube access restores real filtering readiness and popup status');
     await first.page.getByRole('button', { name: 'Turn protection off', exact: true }).waitFor();
-    await first.page.locator('body').screenshot({ path: path.join(project, 'extension-preview.png') });
+    await first.page.locator('body').screenshot({ path: process.env.QUIETTUBE_TEST_SCREENSHOT || path.join(project, 'extension-preview.png') });
     await command(first.page, false);
     await first.context.close();
     contexts.splice(contexts.indexOf(first.context), 1);
@@ -192,7 +195,7 @@ try {
 } finally {
     for (const context of contexts) await context.close();
     const report = { testedAtUtc: new Date().toISOString(), platform: 'macOS arm64', browser: 'isolated Playwright Chromium', results, errors,
-        limitation: 'Windows 11 Edge, Windows installer/tray runtime, and actual YouTube pre-roll/mid-roll playback remain device acceptance checks.' };
-    await fs.writeFile(path.join(project, 'browser-test-results.json'), JSON.stringify(report, null, 2) + '\n');
+        limitation: process.env.QUIETTUBE_TEST_HOST ? 'Isolated Chromium with the native Swift Mac host. Safari, menu bar UI, and actual YouTube pre-roll/mid-roll playback require separate acceptance checks.' : 'Windows 11 Edge, Windows installer/tray runtime, and actual YouTube pre-roll/mid-roll playback remain device acceptance checks.' };
+    await fs.writeFile(process.env.QUIETTUBE_TEST_REPORT || path.join(project, 'browser-test-results.json'), JSON.stringify(report, null, 2) + '\n');
     console.log(JSON.stringify(report, null, 2));
 }

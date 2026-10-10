@@ -3,6 +3,7 @@ import { getFilteringMode, setFilteringModeDetails } from '../mode-manager.js';
 import { registerContentScripts } from '../scripting-manager.js';
 import { registerUserScripts } from '../compiled-filters.js';
 import { ENGINE } from './engine.js';
+import { PLATFORM } from './platform.js';
 
 const HOST = 'com.quiettube.companion';
 const SITE = 'https://www.youtube.com/*';
@@ -29,7 +30,7 @@ function normalizeState(value) {
     if (!value || typeof value.enabled !== 'boolean' || typeof value.effectiveEnabled !== 'boolean' ||
         !Number.isSafeInteger(value.revision) || value.revision < 0 ||
         !(value.pausedUntilUtc === null || (typeof value.pausedUntilUtc === 'string' && Number.isFinite(Date.parse(value.pausedUntilUtc))))) {
-        throw new Error('The Windows companion returned invalid settings.');
+        throw new Error(`The ${PLATFORM.companionName} returned invalid settings.`);
     }
     return { enabled: value.enabled, effectiveEnabled: value.effectiveEnabled,
         pausedUntilUtc: value.pausedUntilUtc, revision: value.revision };
@@ -125,7 +126,7 @@ async function snapshot() {
         await updateBadge(info);
         await reportStatus(info);
         return { ...state, ...info, ...readiness(info), connected, appRunning, connectionError,
-            browser: navigator.userAgent.includes('Edg/') ? 'Edge' : 'Chrome',
+            browser: PLATFORM.browser,
             extensionVersion: chrome.runtime.getManifest().version, engine: ENGINE };
     });
 }
@@ -138,10 +139,10 @@ function settle(id, error) {
 }
 function nativeRequest(message) {
     const candidate = port;
-    if (!candidate || !connected) return Promise.reject(new Error('Windows companion is unavailable.'));
+    if (!candidate || !connected) return Promise.reject(new Error(`${PLATFORM.companionName} is unavailable.`));
     const requestId = crypto.randomUUID();
     return new Promise((resolve, reject) => {
-        const timer = setTimeout(() => settle(requestId, 'Windows companion did not respond.'), 8000);
+        const timer = setTimeout(() => settle(requestId, `${PLATFORM.companionName} did not respond.`), 8000);
         requests.set(requestId, { resolve, reject, timer });
         try { candidate.postMessage({ ...message, requestId }); }
         catch (error) { disconnect(candidate, errorText(error)); }
@@ -164,12 +165,12 @@ function connect(force = false) {
     if (port && !force) return;
     if (port) {
         const old = port;
-        disconnect(old, 'Reconnecting Windows companion.');
+        disconnect(old, `Reconnecting ${PLATFORM.companionName}.`);
         old.disconnect();
     }
     connectionError = null;
     try {
-        const candidate = chrome.runtime.connectNative(HOST);
+        const candidate = PLATFORM.connectNative(HOST);
         port = candidate;
         const isCurrent = () => port === candidate;
         let nativeRevision = -1;
@@ -227,9 +228,9 @@ function connect(force = false) {
             });
         });
         candidate.onDisconnect.addListener(() => disconnect(candidate,
-            chrome.runtime.lastError?.message || 'Windows companion disconnected.'));
+            chrome.runtime.lastError?.message || `${PLATFORM.companionName} disconnected.`));
         candidate.postMessage({ type: 'hello', requestId: 'hello-' + crypto.randomUUID(), clientId,
-            browser: navigator.userAgent.includes('Edg/') ? 'Edge' : 'Chrome',
+            browser: PLATFORM.browser,
             extensionVersion: chrome.runtime.getManifest().version, engineVersion: ENGINE.version });
     } catch (error) {
         if (port) disconnect(port, errorText(error));
